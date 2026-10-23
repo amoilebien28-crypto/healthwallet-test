@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>محفظتي الصحية - تجريبي 🧪</title>
+  <title>محفظتي الصحية - النسخة الكاملة 🧪</title>
   <link rel="manifest" href="manifest.json" />
   <meta name="theme-color" content="#059669" />
   <style>
@@ -12,7 +12,6 @@
       --primary-dark: #047857;
       --primary-light: #ecfdf5;
       --danger: #dc2626;
-      --warning: #d97706;
       --text: #1f2937;
       --bg: #f9fafb;
       --card-bg: #ffffff;
@@ -33,10 +32,8 @@
       min-height: 100vh;
       display: flex;
       flex-direction: column;
-      user-select: none;
     }
 
-    /* En-tête */
     header {
       background-color: var(--primary);
       color: white;
@@ -50,8 +47,8 @@
       box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     }
     header h1 {
-      font-size: 1.25rem;
-      font-weight: 700;
+      font-size: 1.2rem;
+      font-weight: bold;
     }
     .btn-header-back {
       background: rgba(255, 255, 255, 0.2);
@@ -64,7 +61,6 @@
       display: none;
     }
 
-    /* Conteneur principal */
     main {
       flex: 1;
       padding: 16px;
@@ -73,7 +69,6 @@
       width: 100%;
     }
 
-    /* Cartes & Sections */
     .view-section {
       display: none;
     }
@@ -90,19 +85,19 @@
       box-shadow: 0 1px 3px rgba(0,0,0,0.05);
     }
 
-    /* Bouton d'urgence */
+    /* زر الطوارئ */
     .sos-card {
       background: #fef2f2;
       border: 2px solid #fca5a5;
       text-align: center;
-      padding: 16px;
+      padding: 14px;
     }
     .sos-btn {
       background-color: var(--danger);
       color: white;
       width: 100%;
-      padding: 16px;
-      font-size: 1.2rem;
+      padding: 14px;
+      font-size: 1.15rem;
       font-weight: bold;
       border: none;
       border-radius: 12px;
@@ -111,22 +106,21 @@
       align-items: center;
       justify-content: center;
       gap: 10px;
-      box-shadow: 0 4px 6px rgba(220, 38, 38, 0.2);
     }
 
-    /* Menu d'accueil */
+    /* شبكة القائمة الرئيسية */
     .menu-grid {
       display: grid;
       grid-template-columns: 1fr;
-      gap: 14px;
+      gap: 12px;
       margin-top: 10px;
     }
     .menu-item-btn {
       background: white;
       border: 2px solid var(--border);
       border-radius: 16px;
-      padding: 20px;
-      font-size: 1.25rem;
+      padding: 16px;
+      font-size: 1.15rem;
       font-weight: bold;
       color: var(--text);
       display: flex;
@@ -134,35 +128,31 @@
       gap: 16px;
       cursor: pointer;
       text-align: right;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.04);
-      transition: background 0.15s;
     }
     .menu-item-btn:active {
       background: var(--primary-light);
       border-color: var(--primary);
     }
     .menu-item-btn .icon {
-      font-size: 2rem;
+      font-size: 2.2rem;
     }
 
-    /* Formulaires simples */
+    /* نماذج وحقول */
     label {
       display: block;
       font-weight: bold;
       margin-bottom: 6px;
-      font-size: 1.05rem;
     }
-    input[type="text"], select {
+    input[type="text"], input[type="tel"], select {
       width: 100%;
-      padding: 14px;
+      padding: 12px;
       border-radius: 10px;
       border: 2px solid var(--border);
-      font-size: 1.1rem;
-      margin-bottom: 14px;
+      font-size: 1rem;
+      margin-bottom: 12px;
       background: white;
     }
 
-    /* Sélecteur d'heure simplifié */
     .time-presets {
       display: flex;
       gap: 8px;
@@ -170,51 +160,33 @@
     }
     .time-preset-btn {
       flex: 1;
-      padding: 12px 6px;
+      padding: 10px 4px;
       background: #f3f4f6;
       border: 1px solid #d1d5db;
       border-radius: 8px;
       font-weight: bold;
-      font-size: 0.95rem;
       cursor: pointer;
-    }
-    .time-preset-btn.active {
-      background: var(--primary);
-      color: white;
-      border-color: var(--primary-dark);
-    }
-    .time-select-row {
-      display: flex;
-      gap: 10px;
-      align-items: center;
-      margin-bottom: 16px;
-    }
-    .time-select-row select {
-      margin-bottom: 0;
-      font-weight: bold;
-      font-size: 1.2rem;
-      text-align: center;
     }
 
     .btn-submit {
       width: 100%;
-      padding: 16px;
+      padding: 14px;
       background-color: var(--primary);
       color: white;
-      font-size: 1.15rem;
+      font-size: 1.1rem;
       font-weight: bold;
       border: none;
       border-radius: 12px;
       cursor: pointer;
     }
 
-    /* Cartes médicaments */
+    /* بطاقات الأدوية */
     .med-item {
       background: white;
-      border-radius: 14px;
+      border-radius: 12px;
       border: 2px solid var(--border);
-      padding: 16px;
-      margin-bottom: 14px;
+      padding: 14px;
+      margin-bottom: 12px;
     }
     .med-item.taken {
       border-color: #10b981;
@@ -224,29 +196,15 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 12px;
-    }
-    .med-name {
-      font-size: 1.25rem;
-      font-weight: bold;
-    }
-    .med-time {
-      font-size: 1.1rem;
-      font-weight: bold;
-      color: #4b5563;
-      background: #e5e7eb;
-      padding: 4px 10px;
-      border-radius: 20px;
+      margin-bottom: 10px;
     }
     .btn-med-status {
       width: 100%;
-      padding: 14px;
-      border-radius: 10px;
-      font-size: 1.1rem;
+      padding: 12px;
+      border-radius: 8px;
       font-weight: bold;
       cursor: pointer;
       border: none;
-      transition: all 0.2s;
     }
     .btn-not-taken {
       background-color: #fee2e2;
@@ -258,23 +216,20 @@
       color: white;
     }
 
-    /* Section IA Médicament */
+    /* الذكاء الاصطناعي */
     .ai-upload-box {
       border: 2px dashed var(--primary);
       background: var(--primary-light);
-      border-radius: 16px;
-      padding: 24px;
+      border-radius: 14px;
+      padding: 20px;
       text-align: center;
       cursor: pointer;
-      margin-bottom: 16px;
-    }
-    .ai-upload-box input {
-      display: none;
+      margin-bottom: 14px;
     }
     .preview-img {
       max-width: 100%;
-      max-height: 250px;
-      border-radius: 12px;
+      max-height: 220px;
+      border-radius: 10px;
       display: none;
       margin: 10px auto;
     }
@@ -282,20 +237,12 @@
       display: none;
       background: white;
       border: 2px solid var(--primary);
-      border-radius: 14px;
-      padding: 16px;
+      border-radius: 12px;
+      padding: 14px;
       margin-top: 14px;
     }
-    .ai-loading {
-      display: none;
-      text-align: center;
-      font-weight: bold;
-      color: var(--primary);
-      padding: 20px;
-      font-size: 1.2rem;
-    }
 
-    /* Modal Alerte Alarme */
+    /* المنبه */
     .alarm-modal {
       display: none;
       position: fixed;
@@ -311,45 +258,36 @@
       border-radius: 20px;
       padding: 24px;
       text-align: center;
-      max-width: 400px;
+      max-width: 380px;
       width: 100%;
       border: 4px solid var(--danger);
-      animation: pulse 1s infinite;
-    }
-    @keyframes pulse {
-      0% { transform: scale(1); }
-      50% { transform: scale(1.02); }
-      100% { transform: scale(1); }
     }
   </style>
 </head>
 <body>
 
-  <!-- En-tête -->
   <header>
     <button id="btnHeaderBack" class="btn-header-back" onclick="navigateBack()">← العودة</button>
     <h1 id="headerTitle">محفظتي الصحية 🧪</h1>
-    <span style="font-size: 1.4rem;">🏥</span>
+    <span>🏥</span>
   </header>
 
   <main>
-    <!-- ACCUEIL -->
+    <!-- الصفحة الرئيسية -->
     <div id="viewHome" class="view-section active">
-      <!-- Bloc Appel d'Urgence -->
       <div class="card sos-card">
         <button class="sos-btn" onclick="makeEmergencyCall()">
           <span>📞</span>
-          <span id="sosButtonLabel">اتصال طوارئ بابني</span>
+          <span id="sosButtonLabel">اتصال طوارئ بـ (ابني)</span>
         </button>
       </div>
 
-      <!-- Menu Principal -->
       <div class="menu-grid">
         <button class="menu-item-btn" onclick="openSection('Meds')">
           <span class="icon">⏰</span>
           <div>
             <div>أوقات ومواعيد الدواء</div>
-            <small style="color: #6b7280;">تنبيهات وأزرار واضحة للجرعات</small>
+            <small style="color: #6b7280;">منبهات واضحة وتأكيد الجرعات</small>
           </div>
         </button>
 
@@ -361,159 +299,208 @@
           </div>
         </button>
 
+        <button class="menu-item-btn" onclick="openSection('Pharmacies')">
+          <span class="icon">💊</span>
+          <div>
+            <div>الصيدليات المناوبة</div>
+            <small style="color: #6b7280;">أرقام ومواقع الصيدليات المفتوحة</small>
+          </div>
+        </button>
+
+        <button class="menu-item-btn" onclick="openSection('Doctors')">
+          <span class="icon">🩺</span>
+          <div>
+            <div>دليل الأطباء والعيادات</div>
+            <small style="color: #6b7280;">أرقام الاتصال والاختصاصات</small>
+          </div>
+        </button>
+
+        <button class="menu-item-btn" onclick="openSection('Docs')">
+          <span class="icon">📁</span>
+          <div>
+            <div>دفتر الوصفات والتحاليل</div>
+            <small style="color: #6b7280;">حفظ صور الوصفات الطبية</small>
+          </div>
+        </button>
+
         <button class="menu-item-btn" onclick="openSection('Settings')">
           <span class="icon">⚙️</span>
           <div>
-            <div>إعدادات جهة اتصال الطوارئ</div>
-            <small style="color: #6b7280;">تغيير رقم واسم الشخص المقرب</small>
+            <div>إعدادات رقم الطوارئ</div>
+            <small style="color: #6b7280;">تحديد رقم هاتف المقرب</small>
           </div>
         </button>
       </div>
     </div>
 
-    <!-- SECTION 1 : MÉDICAMENTS -->
+    <!-- 1. مواعيد الأدوية -->
     <div id="viewMeds" class="view-section">
       <div class="card">
-        <h2 style="margin-bottom: 14px;">إضافة دواء جديد</h2>
+        <h2>إضافة دواء جديد</h2>
         <label>اسم الدواء:</label>
         <input type="text" id="medNameInput" placeholder="مثال: باراسيتامول" />
 
-        <label>وقت التناول:</label>
+        <label>أوقات سريعة:</label>
         <div class="time-presets">
           <button type="button" class="time-preset-btn" onclick="setTimePreset('08', '00')">الصباح (08:00)</button>
           <button type="button" class="time-preset-btn" onclick="setTimePreset('13', '00')">الظهر (13:00)</button>
           <button type="button" class="time-preset-btn" onclick="setTimePreset('20', '00')">الليل (20:00)</button>
         </div>
 
-        <div class="time-select-row">
-          <div style="flex:1;">
-            <label style="font-size:0.9rem;">الساعة:</label>
-            <select id="medHourSelect"></select>
-          </div>
-          <span style="font-size:1.5rem; font-weight:bold; margin-top:20px;">:</span>
-          <div style="flex:1;">
-            <label style="font-size:0.9rem;">الدقيقة:</label>
-            <select id="medMinuteSelect">
-              <option value="00">00</option>
-              <option value="15">15</option>
-              <option value="30">30</option>
-              <option value="45">45</option>
-            </select>
-          </div>
+        <div style="display: flex; gap: 8px; align-items: center; margin-bottom: 14px;">
+          <select id="medHourSelect" style="margin-bottom:0; font-weight:bold;"></select>
+          <span style="font-weight:bold; font-size:1.3rem;">:</span>
+          <select id="medMinuteSelect" style="margin-bottom:0; font-weight:bold;">
+            <option value="00">00</option>
+            <option value="15">15</option>
+            <option value="30">30</option>
+            <option value="45">45</option>
+          </select>
         </div>
 
         <button class="btn-submit" onclick="addMedication()">حفظ وتفعيل التنبيه</button>
       </div>
 
       <div class="card">
-        <h2 style="margin-bottom: 12px;">قائمة الأدوية لليوم</h2>
+        <h2>قائمة أدوية اليوم</h2>
         <div id="medListContainer"></div>
       </div>
     </div>
 
-    <!-- SECTION 2 : IA SCANNER MÉDICAMENT -->
+    <!-- 2. فحص الدواء بالذكاء الاصطناعي -->
     <div id="viewAiScanner" class="view-section">
       <div class="card">
-        <h2>📷 فحص الدواء عبر الكاميرا والذكاء الاصطناعي</h2>
-        <p style="color: #6b7280; margin: 8px 0 16px 0;">التقط صورة واضحة لعلبة الدواء أو الشريط وسيقوم النظام بشرحه لك ببساطة.</p>
+        <h2>📷 فحص الدواء بالكاميرا</h2>
+        <p style="color: #6b7280; margin: 6px 0 14px 0;">التقط صورة واضحة لاسم الدواء وسيقوم المساعد بشرحه لك.</p>
 
         <div class="ai-upload-box" onclick="document.getElementById('aiCameraInput').click()">
-          <span style="font-size: 3rem;">📸</span>
-          <p style="font-weight: bold; margin-top: 8px;">اضغط هنا لفتح الكاميرا والتقاط صورة</p>
+          <span style="font-size: 2.8rem;">📸</span>
+          <p style="font-weight: bold; margin-top: 6px;">اضغط لالتقاط صورة الدواء</p>
           <input type="file" id="aiCameraInput" accept="image/*" capture="environment" onchange="handleMedPhoto(event)" />
         </div>
 
         <img id="aiPreviewImg" class="preview-img" alt="صورة الدواء" />
-
-        <div id="aiLoading" class="ai-loading">
-          ⏳ جارٍ التعرف على الدواء بواسطة الذكاء الاصطناعي... يرجى الانتظار بضع ثوانٍ.
+        <div id="aiLoading" style="display: none; text-align: center; font-weight: bold; color: var(--primary); padding: 12px;">
+          ⏳ جارٍ قراءة علبة الدواء بالذكاء الاصطناعي...
         </div>
 
         <div id="aiResultCard" class="ai-result-card">
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
             <h3 id="aiDrugTitle" style="color: var(--primary-dark);"></h3>
-            <button onclick="speakAiResult()" style="background: #e0f2fe; border: 1px solid #7dd3fc; border-radius: 8px; padding: 6px 12px; cursor: pointer; font-weight: bold;">🔊 استماع</button>
+            <button onclick="speakAiResult()" style="background: #e0f2fe; border: 1px solid #7dd3fc; border-radius: 8px; padding: 4px 10px; cursor: pointer; font-weight: bold;">🔊 قراءة صوتية</button>
           </div>
-          <div id="aiDrugExplanation" style="line-height: 1.6; font-size: 1.05rem; white-space: pre-wrap;"></div>
+          <div id="aiDrugExplanation" style="line-height: 1.6; white-space: pre-wrap;"></div>
         </div>
       </div>
     </div>
 
-    <!-- SECTION 3 : PARAMÈTRES URGENCE -->
+    <!-- 3. الصيدليات المناوبة -->
+    <div id="viewPharmacies" class="view-section">
+      <div class="card">
+        <h2>💊 الصيدليات المناوبة</h2>
+        <p style="color: #6b7280; margin-bottom: 12px;">قائمة الصيدليات المفتوحة خلال الليل والعطلات الرسمية.</p>
+        <div style="background: #f3f4f6; padding: 12px; border-radius: 10px; margin-bottom: 10px;">
+          <strong>صيدلية النور (حومة السوق)</strong><br />
+          <span>الموقع: وسط المدينة قرب السوق</span><br />
+          <a href="tel:75000000" style="color: var(--primary); font-weight: bold; display: inline-block; margin-top: 6px;">📞 اتصل: 75 000 000</a>
+        </div>
+        <div style="background: #f3f4f6; padding: 12px; border-radius: 10px;">
+          <strong>صيدلية السلامة (ميدون)</strong><br />
+          <span>الموقع: الشارع الرئيسي</span><br />
+          <a href="tel:75111111" style="color: var(--primary); font-weight: bold; display: inline-block; margin-top: 6px;">📞 اتصل: 75 111 111</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4. الأطباء والعيادات -->
+    <div id="viewDoctors" class="view-section">
+      <div class="card">
+        <h2>🩺 دليل الأطباء والعيادات</h2>
+        <p style="color: #6b7280; margin-bottom: 12px;">أرقام الطوارئ الطبية والمراكز الصحية القريبة.</p>
+        <div style="background: #f3f4f6; padding: 12px; border-radius: 10px; margin-bottom: 10px;">
+          <strong>قسم الاستعجالي والمستشفى الجهوي</strong><br />
+          <a href="tel:190" style="color: var(--danger); font-weight: bold; display: inline-block; margin-top: 6px;">📞 الإسعاف: 190</a>
+        </div>
+        <div style="background: #f3f4f6; padding: 12px; border-radius: 10px;">
+          <strong>الحماية المدنية</strong><br />
+          <a href="tel:198" style="color: var(--danger); font-weight: bold; display: inline-block; margin-top: 6px;">📞 الحماية: 198</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5. دفتر الوصفات -->
+    <div id="viewDocs" class="view-section">
+      <div class="card">
+        <h2>📁 حفظ الوصفات والتحاليل</h2>
+        <p style="color: #6b7280; margin-bottom: 12px;">احتفظ بنسخة من وصفات الطبيب حتى لا تضيع.</p>
+        <input type="file" id="docUploadInput" accept="image/*" capture="environment" onchange="saveDocument(event)" style="display:none;" />
+        <button class="btn-submit" onclick="document.getElementById('docUploadInput').click()">📸 تصوير وحفظ وصفة جديدة</button>
+        <div id="savedDocsContainer" style="margin-top: 14px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px;"></div>
+      </div>
+    </div>
+
+    <!-- 6. إعدادات الطوارئ -->
     <div id="viewSettings" class="view-section">
       <div class="card">
-        <h2>إعدادات زر الطوارئ</h2>
-        <p style="color: #6b7280; margin-bottom: 14px;">حدد اسم ورقم هاتف الشخص المقرب ليتم الاتصال به مباشرة بنقرة واحدة.</p>
-
-        <label>اسم الشخص المقرب:</label>
+        <h2>⚙️ إعدادات جهة اتصال الطوارئ</h2>
+        <p style="color: #6b7280; margin-bottom: 12px;">حدد اسم ورقم هاتف الشخص المقرب للاتصال به بنقرة واحدة.</p>
+        <label>صلة القرابة أو الاسم:</label>
         <input type="text" id="settingContactName" placeholder="مثال: ابني أحمد" />
-
         <label>رقم الهاتف:</label>
-        <input type="text" id="settingContactPhone" placeholder="مثال: 98123456" />
-
-        <button class="btn-submit" onclick="saveEmergencyContact()">حفظ الإعدادات</button>
+        <input type="tel" id="settingContactPhone" placeholder="مثال: 98123456" />
+        <button class="btn-submit" onclick="saveEmergencyContact()">حفظ التعديلات</button>
       </div>
     </div>
   </main>
 
-  <!-- MODAL ALARME MÉDICAMENT -->
+  <!-- نافذة المنبه المنبثقة -->
   <div id="alarmModal" class="alarm-modal">
     <div class="alarm-content">
       <div style="font-size: 3.5rem;">🔔</div>
-      <h2 style="color: var(--danger); margin: 10px 0;">حان موعد تناول الدواء!</h2>
-      <p id="alarmDrugName" style="font-size: 1.3rem; font-weight: bold; margin-bottom: 20px;"></p>
-      <button class="btn-submit" style="background-color: var(--primary);" onclick="dismissAlarm()">أوقفت المنبه وسأتناول الدواء الآن</button>
+      <h2 style="color: var(--danger); margin: 8px 0;">حان موعد شرب الدواء!</h2>
+      <p id="alarmDrugName" style="font-size: 1.25rem; font-weight: bold; margin-bottom: 18px;"></p>
+      <button class="btn-submit" onclick="dismissAlarm()">أوقفت المنبه وسأتناول الدواء الآن</button>
     </div>
   </div>
 
   <script>
-    // --- GESTION DU BOUTON RETOUR PHYSIQUE ANDROID ---
-    window.addEventListener('load', () => {
-      history.replaceState({ page: 'home' }, '');
-    });
-
+    // التنقل وزر الرجوع
+    window.addEventListener('load', () => history.replaceState({ page: 'home' }, ''));
     window.addEventListener('popstate', (e) => {
       if (e.state && e.state.page && e.state.page !== 'home') {
-        showView(e.state.page, false);
+        showView(e.state.page);
       } else {
-        showView('home', false);
+        showView('home');
       }
     });
 
-    function navigateBack() {
-      history.back();
-    }
-
+    function navigateBack() { history.back(); }
     function openSection(pageName) {
       history.pushState({ page: pageName }, '');
-      showView(pageName, false);
+      showView(pageName);
     }
 
-    function showView(pageName, push = false) {
+    function showView(pageName) {
       document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
       const headerTitle = document.getElementById('headerTitle');
       const btnBack = document.getElementById('btnHeaderBack');
 
-      if (pageName === 'home') {
-        document.getElementById('viewHome').classList.add('active');
-        headerTitle.textContent = 'محفظتي الصحية 🧪';
-        btnBack.style.display = 'none';
-      } else if (pageName === 'Meds') {
-        document.getElementById('viewMeds').classList.add('active');
-        headerTitle.textContent = 'مواعيد الأدوية';
-        btnBack.style.display = 'block';
-      } else if (pageName === 'AiScanner') {
-        document.getElementById('viewAiScanner').classList.add('active');
-        headerTitle.textContent = 'فحص الدواء بالذكاء الاصطناعي';
-        btnBack.style.display = 'block';
-      } else if (pageName === 'Settings') {
-        document.getElementById('viewSettings').classList.add('active');
-        headerTitle.textContent = 'إعدادات الطوارئ';
-        btnBack.style.display = 'block';
-      }
+      const titles = {
+        home: 'محفظتي الصحية 🧪',
+        Meds: 'أوقات ومواعيد الدواء',
+        AiScanner: 'فحص الدواء بالذكاء الاصطناعي',
+        Pharmacies: 'الصيدليات المناوبة',
+        Doctors: 'دليل الأطباء',
+        Docs: 'دفتر الوصفات والتحاليل',
+        Settings: 'إعدادات الطوارئ'
+      };
+
+      document.getElementById('view' + pageName.charAt(0).toUpperCase() + pageName.slice(1)).classList.add('active');
+      headerTitle.textContent = titles[pageName] || 'محفظتي الصحية';
+      btnBack.style.display = pageName === 'home' ? 'none' : 'block';
     }
 
-    // --- INITIALISATION DU SÉLECTEUR D'HEURE ---
+    // ساعات الأدوية
     const hourSelect = document.getElementById('medHourSelect');
     for (let i = 0; i < 24; i++) {
       const h = i < 10 ? '0' + i : i;
@@ -529,24 +516,22 @@
       document.getElementById('medMinuteSelect').value = m;
     }
 
-    // --- GESTION DES MÉDICAMENTS & STATUT DE PRISE ---
+    // إدارة الأدوية
     let medications = JSON.parse(localStorage.getItem('hw_meds') || '[]');
-
     function renderMedList() {
       const container = document.getElementById('medListContainer');
       container.innerHTML = '';
       if (medications.length === 0) {
-        container.innerHTML = '<p style="text-align: center; color: #9ca3af; padding: 10px;">لا توجد أدوية مسجلة حتى الآن.</p>';
+        container.innerHTML = '<p style="text-align: center; color: #9ca3af; padding: 10px;">لا توجد أدوية مسجلة.</p>';
         return;
       }
-
       medications.forEach((med, index) => {
         const item = document.createElement('div');
         item.className = 'med-item ' + (med.taken ? 'taken' : '');
         item.innerHTML = `
           <div class="med-header">
-            <span class="med-name">${med.name}</span>
-            <span class="med-time">⏰ ${med.time}</span>
+            <span style="font-weight:bold; font-size:1.15rem;">${med.name}</span>
+            <span style="background:#e5e7eb; padding:2px 8px; border-radius:12px; font-weight:bold;">⏰ ${med.time}</span>
           </div>
           <button class="btn-med-status ${med.taken ? 'btn-is-taken' : 'btn-not-taken'}" onclick="toggleMedTaken(${index})">
             ${med.taken ? 'تم شرب الدواء بنجاح ✔' : 'لم أشرب بعد - اضغط هنا عند التناول'}
@@ -560,16 +545,11 @@
       const name = document.getElementById('medNameInput').value.trim();
       const h = document.getElementById('medHourSelect').value;
       const m = document.getElementById('medMinuteSelect').value;
-      if (!name) {
-        alert('الرجاء كتابة اسم الدواء');
-        return;
-      }
-      const timeStr = `${h}:${m}`;
-      medications.push({ name, time: timeStr, taken: false });
+      if (!name) return alert('الرجاء كتابة اسم الدواء');
+      medications.push({ name, time: `${h}:${m}`, taken: false });
       localStorage.setItem('hw_meds', JSON.stringify(medications));
       document.getElementById('medNameInput').value = '';
       renderMedList();
-      alert('تمت إضافة الدواء بنجاح وسيعمل المنبه في وقته المحدد.');
     }
 
     function toggleMedTaken(index) {
@@ -578,188 +558,168 @@
       renderMedList();
     }
 
-    // --- ALARME PUISSANTE & VIBRATION ---
-    let alarmAudioCtx = null;
+    // التنبيه والصوت
     let alarmInterval = null;
-
-    function playLoudAlarm() {
-      // Vibration répétée
-      if (navigator.vibrate) {
-        navigator.vibrate([800, 250, 800, 250, 800]);
-      }
-      // Synthétiseur audio Web Audio API
+    function playAlarmSound() {
+      if (navigator.vibrate) navigator.vibrate([800, 250, 800, 250, 800]);
       try {
-        const AudioContext = window.AudioContext || window.webkitAudioContext;
-        if (!alarmAudioCtx) alarmAudioCtx = new AudioContext();
-        
-        const osc = alarmAudioCtx.createOscillator();
-        const gain = alarmAudioCtx.createGain();
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
         osc.type = 'sawtooth';
-        osc.frequency.setValueAtTime(880, alarmAudioCtx.currentTime); // Fréquence percutante
-        gain.gain.setValueAtTime(0.3, alarmAudioCtx.currentTime);
-        
+        osc.frequency.setValueAtTime(880, ctx.currentTime);
+        gain.gain.setValueAtTime(0.3, ctx.currentTime);
         osc.connect(gain);
-        gain.connect(alarmAudioCtx.destination);
+        gain.connect(ctx.destination);
         osc.start();
-        osc.stop(alarmAudioCtx.currentTime + 1.2);
-      } catch (e) {
-        console.warn('Audio non disponible', e);
-      }
+        osc.stop(ctx.currentTime + 1.2);
+      } catch (e) {}
     }
 
-    // Vérification chaque minute de l'heure des médicaments
     setInterval(() => {
       const now = new Date();
-      const currentH = now.getHours() < 10 ? '0' + now.getHours() : '' + now.getHours();
-      const currentM = now.getMinutes() < 10 ? '0' + now.getMinutes() : '' + now.getMinutes();
-      const currentTime = `${currentH}:${currentM}`;
-
+      const h = now.getHours() < 10 ? '0' + now.getHours() : '' + now.getHours();
+      const m = now.getMinutes() < 10 ? '0' + now.getMinutes() : '' + now.getMinutes();
+      const timeStr = `${h}:${m}`;
       medications.forEach(med => {
-        if (med.time === currentTime && !med.taken && now.getSeconds() < 10) {
-          triggerAlarm(med.name);
+        if (med.time === timeStr && !med.taken && now.getSeconds() < 10) {
+          document.getElementById('alarmDrugName').textContent = med.name;
+          document.getElementById('alarmModal').style.display = 'flex';
+          playAlarmSound();
+          if (!alarmInterval) alarmInterval = setInterval(playAlarmSound, 3000);
         }
       });
     }, 15000);
 
-    function triggerAlarm(medName) {
-      document.getElementById('alarmDrugName').textContent = medName;
-      document.getElementById('alarmModal').style.display = 'flex';
-      playLoudAlarm();
-      if (!alarmInterval) {
-        alarmInterval = setInterval(playLoudAlarm, 3000);
-      }
-    }
-
     function dismissAlarm() {
       document.getElementById('alarmModal').style.display = 'none';
-      if (alarmInterval) {
-        clearInterval(alarmInterval);
-        alarmInterval = null;
-      }
+      if (alarmInterval) { clearInterval(alarmInterval); alarmInterval = null; }
       if (navigator.vibrate) navigator.vibrate(0);
     }
 
-    // --- ANALYSE DE MÉDICAMENT PAR IA (GEMINI API) ---
+    // الذكاء الاصطناعي (Gemini)
     const GEMINI_API_KEY = "AQ.Ab8RN6Iow2IBmaUYZiEr3oonYTl655ztA3lW2epoV2vaIRMx6Q";
-    let lastAiText = "";
+    let lastAiSpeech = "";
 
     function handleMedPhoto(e) {
       const file = e.target.files[0];
       if (!file) return;
-
       const reader = new FileReader();
-      reader.onload = function(evt) {
+      reader.onload = (evt) => {
         const base64Data = evt.target.result.split(',')[1];
-        const previewImg = document.getElementById('aiPreviewImg');
-        previewImg.src = evt.target.result;
-        previewImg.style.display = 'block';
-
-        analyzeDrugWithAI(base64Data, file.type || 'image/jpeg');
+        const preview = document.getElementById('aiPreviewImg');
+        preview.src = evt.target.result;
+        preview.style.display = 'block';
+        callGeminiVision(base64Data, file.type || 'image/jpeg');
       };
       reader.readAsDataURL(file);
     }
 
-    async function analyzeDrugWithAI(base64Image, mimeType) {
+    async function callGeminiVision(base64Image, mimeType) {
       const loading = document.getElementById('aiLoading');
-      const resultCard = document.getElementById('aiResultCard');
-      const drugTitle = document.getElementById('aiDrugTitle');
-      const drugExplanation = document.getElementById('aiDrugExplanation');
+      const card = document.getElementById('aiResultCard');
+      const title = document.getElementById('aiDrugTitle');
+      const exp = document.getElementById('aiDrugExplanation');
 
       loading.style.display = 'block';
-      resultCard.style.display = 'none';
+      card.style.display = 'none';
 
-      const promptText = "أنت صيدلي خبير ومساعد موجه لكبار السن. انظر إلى صورة علبة الدواء هذه وأجب بالتنسيق التالي بدقة ووضوح:\n" +
-        "1. اسم الدواء وقوته.\n" +
-        "2. دواعي الاستعمال الرئيسية (لماذا يُستعمل؟ باختصار شديد وبسيط).\n" +
-        "3. نصيحة وتنبيه هام (مثل: يؤخذ مع الطعام أو خطر مع أدوية أخرى).\n" +
-        "اجعل الأسلوب واضحاً وبسيطاً وبلغة مفهومة ومريحة.";
-
+      const prompt = "أنت صيدلي خبير لكبار السن. اقرأ صورة الدواء واشرح باختصار:\n1. اسم الدواء وقوته.\n2. دواعي الاستعمال الرئيسية (لماذا يُستعمل؟).\n3. نصيحة وتنبيه طريقة التناول.";
       const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_API_KEY}`;
 
       try {
-        const response = await fetch(url, {
+        const res = await fetch(url, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            contents: [{
-              parts: [
-                { text: promptText },
-                {
-                  inline_data: {
-                    mime_type: mimeType,
-                    data: base64Image
-                  }
-                }
-              ]
-            }]
+            contents: [{ parts: [{ text: prompt }, { inline_data: { mime_type: mimeType, data: base64Image } }] }]
           })
         });
-
-        const data = await response.json();
+        const data = await res.json();
         loading.style.display = 'none';
-
         if (data.candidates && data.candidates[0].content.parts[0].text) {
-          const answer = data.candidates[0].content.parts[0].text;
-          lastAiText = answer;
-          drugTitle.textContent = "📋 نتيجة الفحص والتحليل";
-          drugExplanation.textContent = answer;
-          resultCard.style.display = 'block';
+          const txt = data.candidates[0].content.parts[0].text;
+          lastAiSpeech = txt;
+          title.textContent = "📋 نتيجة الفحص الطبي";
+          exp.textContent = txt;
+          card.style.display = 'block';
         } else {
-          drugTitle.textContent = "تنبيه";
-          drugExplanation.textContent = "تعذر تحديد بيانات الدواء بدقة. يرجى إعادة التقاط صورة مقربة وواضحة للاسم.";
-          resultCard.style.display = 'block';
+          title.textContent = "تنبيه";
+          exp.textContent = "لم يتم التعرف على الدواء بوضوح، يرجى التقاط صورة أقرب للعلبة.";
+          card.style.display = 'block';
         }
       } catch (err) {
         loading.style.display = 'none';
-        alert('حدث خطأ أثناء الاتصال بمحرك التحليل. تأكد من اتصال الإنترنت.');
+        alert('يرجى التأكد من اتصال الإنترنت.');
       }
     }
 
     function speakAiResult() {
-      if (!lastAiText) return;
-      if ('speechSynthesis' in window) {
-        window.speechSynthesis.cancel();
-        const utter = new SpeechSynthesisUtterance(lastAiText);
-        utter.lang = 'ar-SA';
-        utter.rate = 0.9; // Rythme posé pour les seniors
-        window.speechSynthesis.speak(utter);
-      } else {
-        alert('خاصية النطق غير مدعومة على هذا المتصفح.');
-      }
+      if (!lastAiSpeech || !('speechSynthesis' in window)) return;
+      window.speechSynthesis.cancel();
+      const u = new SpeechSynthesisUtterance(lastAiSpeech);
+      u.lang = 'ar-SA';
+      u.rate = 0.9;
+      window.speechSynthesis.speak(u);
     }
 
-    // --- CONTACT D'URGENCE ---
-    function loadEmergencyContact() {
+    // حفظ الوصفات
+    let savedDocs = JSON.parse(localStorage.getItem('hw_docs') || '[]');
+    function renderDocs() {
+      const container = document.getElementById('savedDocsContainer');
+      container.innerHTML = '';
+      savedDocs.forEach(src => {
+        const img = document.createElement('img');
+        img.src = src;
+        img.style.width = '100%';
+        img.style.borderRadius = '8px';
+        img.style.border = '1px solid #ccc';
+        container.appendChild(img);
+      });
+    }
+    function saveDocument(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+      const r = new FileReader();
+      r.onload = (evt) => {
+        savedDocs.push(evt.target.result);
+        localStorage.setItem('hw_docs', JSON.stringify(savedDocs));
+        renderDocs();
+      };
+      r.readAsDataURL(file);
+    }
+
+    // إعدادات الطوارئ
+    function loadSos() {
       const name = localStorage.getItem('hw_sos_name') || 'ابني';
       const phone = localStorage.getItem('hw_sos_phone') || '';
       document.getElementById('sosButtonLabel').textContent = `اتصال طوارئ بـ (${name})`;
       document.getElementById('settingContactName').value = name;
       document.getElementById('settingContactPhone').value = phone;
     }
-
     function saveEmergencyContact() {
       const name = document.getElementById('settingContactName').value.trim() || 'المقرب';
       const phone = document.getElementById('settingContactPhone').value.trim();
       localStorage.setItem('hw_sos_name', name);
       localStorage.setItem('hw_sos_phone', phone);
-      loadEmergencyContact();
-      alert('تم حفظ جهة الاتصال بنجاح.');
+      loadSos();
+      alert('تم حفظ رقم الطوارئ.');
       navigateBack();
     }
-
     function makeEmergencyCall() {
       const phone = localStorage.getItem('hw_sos_phone');
       if (!phone) {
-        alert('يرجى أولاً ضبط رقم هاتف الطوارئ من قسم الإعدادات.');
+        alert('يرجى تحديد رقم الطوارئ من الإعدادات أولاً.');
         openSection('Settings');
         return;
       }
       window.location.href = `tel:${phone}`;
     }
 
-    // Initialisation générale
+    // تشغيل أولي
     renderMedList();
-    loadEmergencyContact();
+    renderDocs();
+    loadSos();
   </script>
 </body>
 </html>
