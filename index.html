@@ -105,7 +105,7 @@
             color: var(--text-main);
         }
 
-        .input-group input, .input-group textarea {
+        .input-group input, .input-group textarea, .input-group select {
             width: 100%;
             padding: 13px 14px;
             border: 2px solid #cbd5e1;
@@ -117,7 +117,7 @@
             background: #f8fafc;
         }
 
-        .input-group input:focus, .input-group textarea:focus {
+        .input-group input:focus, .input-group textarea:focus, .input-group select:focus {
             border-color: var(--primary);
             background: #ffffff;
         }
@@ -269,11 +269,17 @@
             opacity: 0.7;
         }
 
-        /* تنسيق ألوان الأزرار */
+        /* تنسيقات ألوان الأزرار */
         .btn-theme-prescriptions {
             background: linear-gradient(135deg, #e0f2fe, #bae6fd);
             color: #0369a1;
             border: 2px solid #7dd3fc;
+        }
+
+        .btn-theme-schedule {
+            background: linear-gradient(135deg, #fef3c7, #fde68a);
+            color: #b45309;
+            border: 2px solid #fcd34d;
         }
 
         .btn-theme-medicines {
@@ -295,9 +301,9 @@
         }
 
         .btn-theme-doctors {
-            background: linear-gradient(135deg, #fef9c3, #fde047);
-            color: #854d0e;
-            border: 2px solid #facc15;
+            background: linear-gradient(135deg, #f1f5f9, #e2e8f0);
+            color: #334155;
+            border: 2px solid #cbd5e1;
         }
 
         /* الشاشات الفرعية */
@@ -379,7 +385,6 @@
             font-size: 0.95rem;
         }
 
-        /* بطاقات الأطباء والصيدليات */
         .directory-card {
             background: white;
             border: 1.5px solid #d1fae5;
@@ -417,6 +422,85 @@
             align-items: center;
             gap: 6px;
             border: 1.5px solid #86efac;
+        }
+
+        /* --- تصميم قسم مواعيد الأدوية --- */
+        .schedule-section-header {
+            background: white;
+            border-radius: 16px;
+            padding: 14px;
+            margin-bottom: 16px;
+            border: 1.5px solid #fde68a;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+        }
+
+        .schedule-slot-title {
+            font-size: 1.15rem;
+            font-weight: 900;
+            color: #92400e;
+            margin: 16px 0 8px 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .med-item-card {
+            background: white;
+            border: 2px solid #e2e8f0;
+            border-radius: 16px;
+            padding: 14px 16px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 3px 6px rgba(0,0,0,0.02);
+            transition: all 0.2s ease;
+        }
+
+        .med-item-card.taken {
+            background: #f0fdf4;
+            border-color: #86efac;
+            opacity: 0.75;
+        }
+
+        .med-item-card.taken h4 {
+            text-decoration: line-through;
+            color: #166534;
+        }
+
+        .med-item-info h4 {
+            font-size: 1.1rem;
+            font-weight: 900;
+            margin-bottom: 4px;
+        }
+
+        .med-item-info span {
+            font-size: 0.85rem;
+            color: var(--text-sub);
+            font-weight: 700;
+        }
+
+        .med-item-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-check-med {
+            background: #e2e8f0;
+            border: none;
+            padding: 8px 14px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 800;
+            cursor: pointer;
+            color: #334155;
+            transition: all 0.2s ease;
+        }
+
+        .btn-check-med.active {
+            background: #22c55e;
+            color: white;
         }
 
         .bottom-action-bar {
@@ -460,7 +544,6 @@
             cursor: pointer;
         }
 
-        /* لوحة تحكم المسؤول (ADMIN) */
         #adminView {
             display: none;
             padding-bottom: 35px;
@@ -623,6 +706,15 @@
                 <span class="btn-main-menu-arrow">◀</span>
             </button>
 
+            <!-- الزر الجديد: مواعيد وتذكير الأدوية -->
+            <button class="btn-main-menu btn-theme-schedule" onclick="openSubpage('schedule', '⏰ مواعيد وتذكير الأدوية')">
+                <div class="btn-main-menu-text">
+                    <div class="btn-main-menu-icon">⏰</div>
+                    <span>مواعيد شرب الأدوية</span>
+                </div>
+                <span class="btn-main-menu-arrow">◀</span>
+            </button>
+
             <button class="btn-main-menu btn-theme-medicines" onclick="openSubpage('medicines', '💊 علب الأدوية')">
                 <div class="btn-main-menu-text">
                     <div class="btn-main-menu-icon">💊</div>
@@ -639,7 +731,6 @@
                 <span class="btn-main-menu-arrow">◀</span>
             </button>
 
-            <!-- الزر الجديد: الصيدليات المناوبة -->
             <button class="btn-main-menu btn-theme-pharmacies" onclick="openSubpage('pharmacies', '🟢 الصيدليات المناوبة')">
                 <div class="btn-main-menu-text">
                     <div class="btn-main-menu-icon">🟢</div>
@@ -665,6 +756,38 @@
             <h2 id="subpageTitle" style="font-size:1.2rem; color:var(--primary-dark); font-weight:900;"></h2>
         </div>
 
+        <!-- واجهة قسم مواعيد الأدوية -->
+        <div id="scheduleContainer" style="display:none;">
+            <div class="schedule-section-header">
+                <h3 style="font-size:1.05rem; font-weight:800; margin-bottom:10px; color:#b45309;">➕ إضافة دواء جديد لجدول اليوم</h3>
+                <div class="input-group">
+                    <input type="text" id="newMedName" placeholder="اسم الدواء (مثال: Doliprane)">
+                </div>
+                <div class="input-group">
+                    <select id="newMedSlot">
+                        <option value="morning">🌅 الصباح (مع الإفطار)</option>
+                        <option value="noon">☀️ وسط النهار (مع الغداء)</option>
+                        <option value="night">🌙 الليل (مع العشاء أو قبل النوم)</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label style="font-size:0.8rem; color:#64748b;">توقيت التذكير (اختياري)</label>
+                    <input type="time" id="newMedTime" style="font-size:1.1rem;">
+                </div>
+                <button class="btn-auth" style="background:#f59e0b;" onclick="addNewMedSchedule()">إضافة إلى الجدول ⏰</button>
+            </div>
+
+            <!-- قائمة المواعيد اليومية المقسمة -->
+            <div class="schedule-slot-title">🌅 أدوية الصباح</div>
+            <div id="slot-morning-list"></div>
+
+            <div class="schedule-slot-title">☀️ أدوية وسط النهار</div>
+            <div id="slot-noon-list"></div>
+
+            <div class="schedule-slot-title">🌙 أدوية الليل</div>
+            <div id="slot-night-list"></div>
+        </div>
+
         <div id="cardsGrid" class="cards-grid"></div>
         <div id="directoryContainer" style="display:none;"></div>
 
@@ -674,7 +797,7 @@
         </div>
     </div>
 
-    <!-- أزرار الكاميرا والمعرض -->
+    <!-- أزرار التصوير -->
     <div class="bottom-action-bar" id="photoBottomBar" style="display:none;">
         <input type="file" id="directCamInput" accept="image/*" capture="environment" style="display:none;" onchange="handleIncomingPhoto(event)">
         <input type="file" id="galleryInput" accept="image/*" style="display:none;" onchange="handleIncomingPhoto(event)">
@@ -694,7 +817,6 @@
             ⚙️ لوحة إدارة النظام العام
         </div>
 
-        <!-- 1. تعديل المقال اليومي -->
         <div class="admin-card">
             <h3>📢 تحديث لوح الإعلانات / المقال اليومي</h3>
             <div class="input-group">
@@ -703,12 +825,11 @@
             <button class="btn-auth" onclick="publishDailyArticle()">نشر المقال للجميع 🚀</button>
         </div>
 
-        <!-- 2. إضافة صيدلية مناوبة جديدة -->
         <div class="admin-card">
             <h3>🟢 إضافة صيدلية مناوبة جديدة</h3>
             <div class="input-group">
                 <label>اسم الصيدلية</label>
-                <input type="text" id="adminPharmName" placeholder="مثال: صيدلية الأمل (د. أحمد)">
+                <input type="text" id="adminPharmName" placeholder="مثال: صيدلية الأمل">
             </div>
             <div class="input-group">
                 <label>المنطقة / العنوان</label>
@@ -716,7 +837,7 @@
             </div>
             <div class="input-group">
                 <label>وقت الحراسة / المناوبة</label>
-                <input type="text" id="adminPharmTiming" placeholder="مثال: ليلاً (من 20h إلى 08h) أو كامل اليوم">
+                <input type="text" id="adminPharmTiming" placeholder="مثال: ليلاً (من 20h إلى 08h)">
             </div>
             <div class="input-group">
                 <label>رقم الهاتف</label>
@@ -725,13 +846,11 @@
             <button class="btn-auth" onclick="publishNewPharmacy()">إضافة الصيدلية المناوبة 🟢</button>
         </div>
 
-        <!-- قائمة الصيدليات المناوبة للحذف -->
         <div class="admin-card">
             <h3>📋 الصيدليات المناوبة الحالية</h3>
             <div id="adminPharmaciesList"></div>
         </div>
 
-        <!-- 3. إضافة طبيب جديد -->
         <div class="admin-card">
             <h3>👨‍⚕️ إضافة طبيب جديد للدليل العام</h3>
             <div class="input-group">
@@ -753,7 +872,6 @@
             <button class="btn-auth" onclick="publishNewDoctor()">إضافة الطبيب إلى الدليل ✨</button>
         </div>
 
-        <!-- قائمة الأطباء للحذف -->
         <div class="admin-card">
             <h3>📋 قائمة الأطباء المنشورين</h3>
             <div id="adminDoctorsList"></div>
@@ -827,17 +945,36 @@
             document.getElementById('appModal').style.display = 'none';
         }
 
+        function playReminderBeep() {
+            try {
+                const ctx = new (window.AudioContext || window.webkitAudioContext)();
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(587.33, ctx.currentTime); // D5
+                gain.gain.setValueAtTime(0.3, ctx.currentTime);
+                osc.start();
+                osc.stop(ctx.currentTime + 0.35);
+            } catch(e) {}
+        }
+
         function initApp() {
-            const req = indexedDB.open('HealthWalletDB', 6);
+            const req = indexedDB.open('HealthWalletDB', 7);
             req.onupgradeneeded = (e) => {
                 const db = e.target.result;
                 if (!db.objectStoreNames.contains('documents')) {
                     db.createObjectStore('documents', { keyPath: 'id', autoIncrement: true });
                 }
+                if (!db.objectStoreNames.contains('med_schedules')) {
+                    db.createObjectStore('med_schedules', { keyPath: 'id', autoIncrement: true });
+                }
             };
             req.onsuccess = (e) => {
                 localDb = e.target.result;
                 checkSession();
+                setInterval(checkMedAlarms, 60000);
             };
         }
 
@@ -984,19 +1121,24 @@
             document.getElementById('subpageContainer').style.display = 'block';
             document.getElementById('subpageTitle').textContent = title;
 
-            if (cat === 'doctors') {
-                document.getElementById('cardsGrid').style.display = 'none';
+            // إخفاء كل الحاويات أولاً
+            document.getElementById('cardsGrid').style.display = 'none';
+            document.getElementById('directoryContainer').style.display = 'none';
+            document.getElementById('scheduleContainer').style.display = 'none';
+            document.getElementById('photoBottomBar').style.display = 'none';
+            document.getElementById('emptyState').style.display = 'none';
+
+            if (cat === 'schedule') {
+                document.getElementById('scheduleContainer').style.display = 'block';
+                loadScheduleData();
+            } else if (cat === 'doctors') {
                 document.getElementById('directoryContainer').style.display = 'block';
-                document.getElementById('photoBottomBar').style.display = 'none';
                 loadDoctorsForUser();
             } else if (cat === 'pharmacies') {
-                document.getElementById('cardsGrid').style.display = 'none';
                 document.getElementById('directoryContainer').style.display = 'block';
-                document.getElementById('photoBottomBar').style.display = 'none';
                 loadPharmaciesForUser();
             } else {
                 document.getElementById('cardsGrid').style.display = 'grid';
-                document.getElementById('directoryContainer').style.display = 'none';
                 document.getElementById('photoBottomBar').style.display = 'flex';
                 loadCategoryPhotos();
             }
@@ -1008,6 +1150,126 @@
             document.getElementById('userMainMenu').style.display = 'block';
         }
 
+        // --- إدارة مواعيد الأدوية اليومية ---
+        function addNewMedSchedule() {
+            const name = document.getElementById('newMedName').value.trim();
+            const slot = document.getElementById('newMedSlot').value;
+            const time = document.getElementById('newMedTime').value;
+
+            if (!name) {
+                showAppAlert('تنبيه', 'الرجاء إدخال اسم الدواء');
+                return;
+            }
+
+            const todayStr = new Date().toISOString().slice(0, 10);
+            const medRecord = {
+                phone: currentPhone,
+                name: name,
+                slot: slot,
+                time: time || '',
+                takenDate: '',
+                createdAt: Date.now()
+            };
+
+            const tx = localDb.transaction(['med_schedules'], 'readwrite');
+            tx.objectStore('med_schedules').add(medRecord);
+            tx.oncomplete = () => {
+                document.getElementById('newMedName').value = '';
+                document.getElementById('newMedTime').value = '';
+                loadScheduleData();
+                showAppAlert('تم بنجاح', 'تمت إضافة الدواء إلى جدولك اليومي!');
+            };
+        }
+
+        function loadScheduleData() {
+            const morningList = document.getElementById('slot-morning-list');
+            const noonList = document.getElementById('slot-noon-list');
+            const nightList = document.getElementById('slot-night-list');
+
+            morningList.innerHTML = '';
+            noonList.innerHTML = '';
+            nightList.innerHTML = '';
+
+            const tx = localDb.transaction(['med_schedules'], 'readonly');
+            const store = tx.objectStore('med_schedules');
+            const req = store.getAll();
+
+            const todayStr = new Date().toISOString().slice(0, 10);
+
+            req.onsuccess = () => {
+                const items = req.result.filter(item => item.phone === currentPhone);
+
+                items.forEach(med => {
+                    const isTakenToday = med.takenDate === todayStr;
+                    const card = document.createElement('div');
+                    card.className = `med-item-card ${isTakenToday ? 'taken' : ''}`;
+                    card.innerHTML = `
+                        <div class="med-item-info">
+                            <h4>💊 ${med.name}</h4>
+                            <span>${med.time ? `⏰ التوقيت: ${med.time}` : 'حسب الحاجة مع الوجبة'}</span>
+                        </div>
+                        <div class="med-item-actions">
+                            <button class="btn-check-med ${isTakenToday ? 'active' : ''}" onclick="toggleMedTaken(${med.id}, '${isTakenToday ? '' : todayStr}')">
+                                ${isTakenToday ? '✔ تم الشرب' : 'لم أشرب بعد'}
+                            </button>
+                            <button class="btn-del" onclick="deleteMedSchedule(${med.id})">🗑️</button>
+                        </div>
+                    `;
+
+                    if (med.slot === 'morning') morningList.appendChild(card);
+                    else if (med.slot === 'noon') noonList.appendChild(card);
+                    else if (med.slot === 'night') nightList.appendChild(card);
+                });
+
+                if (morningList.children.length === 0) morningList.innerHTML = '<p style="color:#94a3b8; font-size:0.85rem; padding:4px;">لا توجد أدوية صباحية</p>';
+                if (noonList.children.length === 0) noonList.innerHTML = '<p style="color:#94a3b8; font-size:0.85rem; padding:4px;">لا توجد أدوية وسط النهار</p>';
+                if (nightList.children.length === 0) nightList.innerHTML = '<p style="color:#94a3b8; font-size:0.85rem; padding:4px;">لا توجد أدوية ليلية</p>';
+            };
+        }
+
+        function toggleMedTaken(id, newDateVal) {
+            const tx = localDb.transaction(['med_schedules'], 'readwrite');
+            const store = tx.objectStore('med_schedules');
+            const getReq = store.get(id);
+
+            getReq.onsuccess = () => {
+                const data = getReq.result;
+                data.takenDate = newDateVal;
+                store.put(data);
+            };
+
+            tx.oncomplete = () => loadScheduleData();
+        }
+
+        function deleteMedSchedule(id) {
+            showAppConfirm('حذف دواء', 'هل تريد إزالة هذا الدواء من جدولك اليومي؟', () => {
+                const tx = localDb.transaction(['med_schedules'], 'readwrite');
+                tx.objectStore('med_schedules').delete(id);
+                tx.oncomplete = () => loadScheduleData();
+            });
+        }
+
+        function checkMedAlarms() {
+            if (!localDb || !currentPhone) return;
+            const now = new Date();
+            const currentTimeStr = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+            const todayStr = now.toISOString().slice(0, 10);
+
+            const tx = localDb.transaction(['med_schedules'], 'readonly');
+            const store = tx.objectStore('med_schedules');
+            const req = store.getAll();
+
+            req.onsuccess = () => {
+                req.result.forEach(med => {
+                    if (med.phone === currentPhone && med.time === currentTimeStr && med.takenDate !== todayStr) {
+                        playReminderBeep();
+                        showAppAlert('⏰ تذكير بموعد الدواء!', `حان الآن موعد أخذ دواء: ${med.name}`);
+                    }
+                });
+            };
+        }
+
+        // --- باقي وظائف الصور والمستندات ---
         function handleIncomingPhoto(e) {
             const file = e.target.files[0];
             if (!file) return;
@@ -1140,7 +1402,6 @@
             } catch (e) {}
         }
 
-        // عرض الأطباء للمستخدم
         async function loadDoctorsForUser() {
             const container = document.getElementById('directoryContainer');
             const empty = document.getElementById('emptyState');
@@ -1172,7 +1433,6 @@
             }
         }
 
-        // عرض الصيدليات المناوبة للمستخدم
         async function loadPharmaciesForUser() {
             const container = document.getElementById('directoryContainer');
             const empty = document.getElementById('emptyState');
@@ -1204,7 +1464,7 @@
             }
         }
 
-        // --- لوحة الإدارة (ADMIN) ---
+        // --- لوحة الإدارة ---
         function showAdminDashboard() {
             document.getElementById('headerTitle').textContent = 'لوحة إدارة النظام ⚙️';
             document.getElementById('userMainMenu').style.display = 'none';
@@ -1240,7 +1500,6 @@
             }
         }
 
-        // إضافة صيدلية مناوبة
         async function publishNewPharmacy() {
             const name = document.getElementById('adminPharmName').value.trim();
             const city = document.getElementById('adminPharmCity').value.trim();
@@ -1307,7 +1566,6 @@
             });
         }
 
-        // إضافة طبيب
         async function publishNewDoctor() {
             const name = document.getElementById('adminDocName').value.trim();
             const spec = document.getElementById('adminDocSpec').value.trim();
