@@ -179,7 +179,7 @@
             margin: auto;
         }
 
-        /* زر الطوارئ المباشر */
+        /* شريط الطوارئ السريع في الواجهة */
         .sos-banner-card {
             background: #fef2f2;
             border: 2px solid #fca5a5;
@@ -583,6 +583,21 @@
             color: #334155;
         }
 
+        /* حقل استعراض الوقت الكبير */
+        .time-display-box {
+            background: white;
+            border: 2.5px solid #059669;
+            border-radius: 14px;
+            padding: 12px;
+            font-size: 1.6rem;
+            font-weight: 900;
+            text-align: center;
+            color: #065f46;
+            cursor: pointer;
+            letter-spacing: 2px;
+            box-shadow: 0 2px 6px rgba(5, 150, 105, 0.1);
+        }
+
         .bottom-action-bar {
             position: fixed;
             bottom: 0; left: 0; right: 0;
@@ -624,7 +639,7 @@
             cursor: pointer;
         }
 
-        /* الذكاء الاصطناعي لفحص الأدوية */
+        /* بطاقة الذكاء الاصطناعي لفحص الأدوية */
         .ai-card {
             background: white;
             border-radius: 20px;
@@ -745,6 +760,27 @@
 
         .app-modal-btn-primary { background: var(--primary); color: white; }
         .app-modal-btn-secondary { background: #e2e8f0; color: var(--text-main); }
+
+        /* أزرار لوحة الأرقام السفلية لتحديد الوقت */
+        .btn-dial {
+            background: #f8fafc;
+            border: 1.5px solid #cbd5e1;
+            border-radius: 14px;
+            font-size: 1.6rem;
+            font-weight: 900;
+            color: #1e293b;
+            padding: 14px 0;
+            cursor: pointer;
+            transition: background 0.1s;
+        }
+        .btn-dial:active {
+            background: #e2e8f0;
+            transform: scale(0.96);
+        }
+        @keyframes slideUp {
+            from { transform: translateY(100%); }
+            to { transform: translateY(0); }
+        }
     </style>
 </head>
 <body>
@@ -814,7 +850,7 @@
         </div>
 
         <div class="big-buttons-list">
-            <!-- الزر الجديد: فحص الدواء بالكاميرا والذكاء الاصطناعي -->
+            <!-- الزر الجديد: فحص وشرح الدواء بالذكاء الاصطناعي -->
             <button class="btn-main-menu btn-theme-ai" onclick="openSubpage('aiscan', '📷 فحص الدواء بالذكاء الاصطناعي')">
                 <div class="btn-main-menu-text">
                     <div class="btn-main-menu-icon">📷</div>
@@ -879,7 +915,7 @@
             <h2 id="subpageTitle" style="font-size:1.2rem; color:var(--primary-dark); font-weight:900;"></h2>
         </div>
 
-        <!-- قسم الذكاء الاصطناعي لفحص الأدوية -->
+        <!-- 1. قسم الذكاء الاصطناعي لفحص الأدوية -->
         <div id="aiScanContainer" style="display:none;">
             <div class="ai-card">
                 <p style="font-size:0.95rem; font-weight:800; color:#475569; margin-bottom:14px; text-align:center;">
@@ -907,6 +943,7 @@
             </div>
         </div>
 
+        <!-- 2. قسم جدول ومواعيد الأدوية -->
         <div id="scheduleContainer" style="display:none;">
             <div class="notification-permission-box" id="notifPermissionBanner">
                 <p style="font-size:0.95rem; font-weight:800; color:#92400e;">🔔 لتصلك التنبيهات في وقتها على شاشة الهاتف، يرجى تفعيل الإشعارات:</p>
@@ -932,8 +969,11 @@
                         <button type="button" class="time-shortcut-btn" onclick="applyTimePreset('13:00')">الظهر 13:00</button>
                         <button type="button" class="time-shortcut-btn" onclick="applyTimePreset('20:00')">الليل 20:00</button>
                     </div>
-                    <label style="font-size:0.8rem; color:#64748b;">أو اختر التوقيت بدقة:</label>
-                    <input type="time" id="newMedTime" style="font-size:1.1rem;">
+                    <label style="font-size:0.85rem; font-weight:800; color:#475569; margin-top:8px;">التوقيت المحدد (اضغط لتغيير الوقت):</label>
+                    <div id="timeDisplayBox" class="time-display-box" onclick="openTimePickerModal()">
+                        08:00
+                    </div>
+                    <input type="hidden" id="newMedTime" value="08:00">
                 </div>
                 <button class="btn-auth" style="background:#f59e0b;" onclick="addNewMedSchedule()">إضافة إلى الجدول ⏰</button>
             </div>
@@ -1050,6 +1090,35 @@
         </div>
     </div>
 
+    <!-- نافذة لوحة أرقام الوقت المنبثقة من الأسفل -->
+    <div id="timeModalOverlay" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6); z-index:400; align-items:flex-end; justify-content:center;">
+        <div style="background:white; width:100%; max-width:480px; border-radius:24px 24px 0 0; padding:20px; text-align:center; box-shadow:0 -10px 25px rgba(0,0,0,0.2); animation: slideUp 0.2s ease-out;">
+            <div style="width:40px; height:4px; background:#cbd5e1; border-radius:10px; margin:0 auto 12px auto;"></div>
+            <h3 style="color:#0f172a; font-size:1.1rem; margin-bottom:10px; font-weight:900;">حدد وقت الدواء</h3>
+            
+            <div id="keypadDisplay" style="font-size:2.2rem; font-weight:900; color:#059669; background:#f0fdf4; border:2px solid #a7f3d0; border-radius:14px; padding:10px; margin-bottom:16px; letter-spacing:3px;">
+                08:00
+            </div>
+
+            <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:10px; margin-bottom:14px;">
+                <button type="button" class="btn-dial" onclick="pressTimeDigit('1')">1</button>
+                <button type="button" class="btn-dial" onclick="pressTimeDigit('2')">2</button>
+                <button type="button" class="btn-dial" onclick="pressTimeDigit('3')">3</button>
+                <button type="button" class="btn-dial" onclick="pressTimeDigit('4')">4</button>
+                <button type="button" class="btn-dial" onclick="pressTimeDigit('5')">5</button>
+                <button type="button" class="btn-dial" onclick="pressTimeDigit('6')">6</button>
+                <button type="button" class="btn-dial" onclick="pressTimeDigit('7')">7</button>
+                <button type="button" class="btn-dial" onclick="pressTimeDigit('8')">8</button>
+                <button type="button" class="btn-dial" onclick="pressTimeDigit('9')">9</button>
+                <button type="button" class="btn-dial" style="background:#fee2e2; color:#ef4444;" onclick="pressTimeBackspace()">⌫</button>
+                <button type="button" class="btn-dial" onclick="pressTimeDigit('0')">0</button>
+                <button type="button" class="btn-dial" style="background:#059669; color:white;" onclick="confirmTimeInput()">✔</button>
+            </div>
+
+            <button type="button" onclick="closeTimePickerModal()" style="width:100%; padding:12px; border:none; background:#f1f5f9; border-radius:12px; font-weight:800; font-size:0.95rem; color:#475569; cursor:pointer;">إلغاء</button>
+        </div>
+    </div>
+
     <script>
         const firebaseConfig = {
             apiKey: "AIzaSyAdkhQijkc_oJ8MXONIh2KgQfUIAsZylDM",
@@ -1063,17 +1132,15 @@
         firebase.initializeApp(firebaseConfig);
         const cloudDb = firebase.firestore();
 
-        // مفتاح الذكاء الاصطناعي لفحص الأدوية
-        const GEMINI_API_KEY = "AQ.Ab8RN6Iow2IBmaUYZiEr3oonYTl655ztA3lW2epoV2vaIRMx6Q";
-        let lastAnalyzedText = "";
-
         let localDb;
         let currentPhone = localStorage.getItem('user_phone') || '';
         let userRole = localStorage.getItem('user_role') || 'user';
         let currentSubCategory = '';
         let swRegistration = null;
+        let lastAnalyzedText = "";
+        let enteredDigits = "";
 
-        // إدارة زر الرجوع في أندرويد (Hardware Back Button)
+        // إدارة زر الرجوع في أندرويد
         window.addEventListener('load', () => {
             history.replaceState({ screen: 'home' }, '');
         });
@@ -1127,7 +1194,6 @@
             document.getElementById('appModal').style.display = 'none';
         }
 
-        // تشغيل تنبيه صوتي واهتزاز قوي متكرر
         function playReminderBeep() {
             if (navigator.vibrate) {
                 navigator.vibrate([700, 250, 700, 250, 700]);
@@ -1382,7 +1448,67 @@
             }
         }
 
+        // --- لوحة الأرقام المنبثقة من الأسفل لكتابة الوقت ---
+        function openTimePickerModal() {
+            enteredDigits = "";
+            document.getElementById('keypadDisplay').textContent = "-- : --";
+            document.getElementById('timeModalOverlay').style.display = 'flex';
+        }
+
+        function closeTimePickerModal() {
+            document.getElementById('timeModalOverlay').style.display = 'none';
+        }
+
+        function pressTimeDigit(digit) {
+            if (enteredDigits.length >= 4) return;
+            enteredDigits += digit;
+            updateKeypadDisplay();
+
+            if (enteredDigits.length === 4) {
+                setTimeout(confirmTimeInput, 200);
+            }
+        }
+
+        function pressTimeBackspace() {
+            enteredDigits = enteredDigits.slice(0, -1);
+            updateKeypadDisplay();
+        }
+
+        function updateKeypadDisplay() {
+            const display = document.getElementById('keypadDisplay');
+            if (enteredDigits.length === 0) {
+                display.textContent = "-- : --";
+            } else if (enteredDigits.length === 1) {
+                display.textContent = enteredDigits[0] + "- : --";
+            } else if (enteredDigits.length === 2) {
+                display.textContent = enteredDigits.slice(0, 2) + " : --";
+            } else if (enteredDigits.length === 3) {
+                display.textContent = enteredDigits.slice(0, 2) + " : " + enteredDigits[2] + "-";
+            } else if (enteredDigits.length === 4) {
+                display.textContent = enteredDigits.slice(0, 2) + " : " + enteredDigits.slice(2, 4);
+            }
+        }
+
+        function confirmTimeInput() {
+            if (enteredDigits.length < 4) {
+                showAppAlert('تنبيه', 'يرجى كتابة أربعة أرقام للتوقيت (مثال: 0830 للساعة 08:30)');
+                return;
+            }
+
+            let hh = parseInt(enteredDigits.slice(0, 2), 10);
+            let mm = parseInt(enteredDigits.slice(2, 4), 10);
+
+            if (hh > 23) hh = 23;
+            if (mm > 59) mm = 59;
+
+            const finalTime = `${String(hh).padStart(2, '0')}:${String(mm).padStart(2, '0')}`;
+            document.getElementById('timeDisplayBox').textContent = finalTime;
+            document.getElementById('newMedTime').value = finalTime;
+            closeTimePickerModal();
+        }
+
         function applyTimePreset(timeStr) {
+            document.getElementById('timeDisplayBox').textContent = timeStr;
             document.getElementById('newMedTime').value = timeStr;
         }
 
@@ -1400,7 +1526,7 @@
                 phone: currentPhone,
                 name: name,
                 slot: slot,
-                time: time || '',
+                time: time || '08:00',
                 takenDate: '',
                 lastAlertedDate: '',
                 createdAt: Date.now()
@@ -1410,7 +1536,6 @@
             tx.objectStore('med_schedules').add(medRecord);
             tx.oncomplete = () => {
                 document.getElementById('newMedName').value = '';
-                document.getElementById('newMedTime').value = '';
                 loadScheduleData();
                 showAppAlert('تم بنجاح', 'تمت إضافة الدواء إلى جدولك اليومي!');
             };
@@ -1510,24 +1635,40 @@
             };
         }
 
-        // --- ميزة فحص الدواء بالذكاء الاصطناعي (Gemini Vision) ---
+        // --- ميزة فحص الدواء بالذكاء الاصطناعي (محدثة ومصححة) ---
         function processAiDrugImage(e) {
             const file = e.target.files[0];
             if (!file) return;
 
             const reader = new FileReader();
             reader.onload = (evt) => {
-                const base64Data = evt.target.result.split(',')[1];
-                const preview = document.getElementById('aiPhotoPreview');
-                preview.src = evt.target.result;
-                preview.style.display = 'block';
-                callGeminiForMedScan(base64Data, file.type || 'image/jpeg');
+                const img = new Image();
+                img.onload = () => {
+                    const canvas = document.createElement('canvas');
+                    const MAX_WIDTH = 800;
+                    const scaleSize = MAX_WIDTH / img.width;
+                    canvas.width = (img.width > MAX_WIDTH) ? MAX_WIDTH : img.width;
+                    canvas.height = (img.width > MAX_WIDTH) ? (img.height * scaleSize) : img.height;
+                    
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                    
+                    const compressedBase64 = canvas.toDataURL('image/jpeg', 0.85);
+                    const base64Data = compressedBase64.split(',')[1];
+                    
+                    const preview = document.getElementById('aiPhotoPreview');
+                    preview.src = compressedBase64;
+                    preview.style.display = 'block';
+                    
+                    callGeminiForMedScan(base64Data);
+                };
+                img.src = evt.target.result;
             };
             reader.readAsDataURL(file);
             e.target.value = '';
         }
 
-        async function callGeminiForMedScan(base64Image, mimeType) {
+        async function callGeminiForMedScan(base64Image) {
             const loader = document.getElementById('aiLoader');
             const panel = document.getElementById('aiResultPanel');
             const resultText = document.getElementById('aiResultText');
@@ -1535,12 +1676,10 @@
             loader.style.display = 'block';
             panel.style.display = 'none';
 
-            const prompt = "أنت صيدلي خبير ومساعد طبي لكبار السن. اقرأ اسم الدواء الموضح في الصورة وأجب باللغة العربية باختصار شديد وبنقاط واضحة:\n" +
-                "1. اسم الدواء وقوته.\n" +
-                "2. دواعي الاستعمال الرئيسية (لماذا يُستعمل؟).\n" +
-                "3. أهم نصيحة أو تحذير عند تناوله (مع الأكل، أو تأثيرات جانبية شائعة).";
+            const activeKey = firebaseConfig.apiKey;
+            const prompt = "أنت صيدلي خبير ومساعد موجه لكبار السن. انظر للصورة بدقة وتعرف على الدواء واكتب باللغة العربية البسيطة:\n1. اسم الدواء وقوته ونوعه (مرهم، حبوب، شراب).\n2. دواعي الاستعمال الرئيسية (لماذا يُستعمل؟).\n3. طريقة الاستعمال الصحيحة وتحذير مختصر.";
 
-            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_API_KEY}`;
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${activeKey}`;
 
             try {
                 const res = await fetch(url, {
@@ -1550,7 +1689,7 @@
                         contents: [{
                             parts: [
                                 { text: prompt },
-                                { inline_data: { mime_type: mimeType, data: base64Image } }
+                                { inline_data: { mime_type: "image/jpeg", data: base64Image } }
                             ]
                         }]
                     })
@@ -1559,28 +1698,41 @@
                 const data = await res.json();
                 loader.style.display = 'none';
 
-                if (data.candidates && data.candidates[0].content.parts[0].text) {
+                if (data.candidates && data.candidates[0].content && data.candidates[0].content.parts[0].text) {
                     const text = data.candidates[0].content.parts[0].text;
                     lastAnalyzedText = text;
                     resultText.textContent = text;
                     panel.style.display = 'block';
+                } else if (data.error) {
+                    lastAnalyzedText = "تعذر الاتصال بالخدمة: " + (data.error.message || "يرجى التحقق من إعدادات المفتاح");
+                    resultText.textContent = lastAnalyzedText;
+                    panel.style.display = 'block';
                 } else {
-                    resultText.textContent = "تعذر تحديد بيانات الدواء بوضوح. يرجى التقاط صورة مقربة وواضحة للاسم.";
+                    lastAnalyzedText = "تعذر قراءة بيانات الدواء بدقة. يرجى التقاط صورة مقربة وواضحة للاسم.";
+                    resultText.textContent = lastAnalyzedText;
                     panel.style.display = 'block';
                 }
             } catch(e) {
                 loader.style.display = 'none';
-                showAppAlert('خطأ', 'تعذر الاتصال بخادم التحليل. تأكد من توفر الإنترنت.');
+                lastAnalyzedText = "حدث خطأ أثناء فحص الدواء، يرجى التأكد من اتصال الإنترنت وإعادة المحاولة.";
+                resultText.textContent = lastAnalyzedText;
+                panel.style.display = 'block';
             }
         }
 
         function readAiTextVoice() {
-            if (!lastAnalyzedText || !('speechSynthesis' in window)) return;
-            window.speechSynthesis.cancel();
-            const u = new SpeechSynthesisUtterance(lastAnalyzedText);
-            u.lang = 'ar-SA';
-            u.rate = 0.9;
-            window.speechSynthesis.speak(u);
+            const textToSpeak = lastAnalyzedText || document.getElementById('aiResultText').textContent;
+            if (!textToSpeak) return;
+
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel();
+                const u = new SpeechSynthesisUtterance(textToSpeak);
+                u.lang = 'ar';
+                u.rate = 0.85;
+                window.speechSynthesis.speak(u);
+            } else {
+                showAppAlert('تنبيه', 'خاصية تحويل النص إلى صوت غير مدعومة في هاتفك.');
+            }
         }
 
         // --- زر الطوارئ المباشر ---
