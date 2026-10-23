@@ -179,7 +179,7 @@
             margin: auto;
         }
 
-        /* شريط الطوارئ السريع في الواجهة */
+        /* Bannière d'urgence (SOS) */
         .sos-banner-card {
             background: #fef2f2;
             border: 2px solid #fca5a5;
@@ -583,7 +583,7 @@
             color: #334155;
         }
 
-        /* حقل استعراض الوقت الكبير */
+        /* Affichage de l'heure grand format */
         .time-display-box {
             background: white;
             border: 2.5px solid #059669;
@@ -639,7 +639,7 @@
             cursor: pointer;
         }
 
-        /* بطاقة الذكاء الاصطناعي لفحص الأدوية */
+        /* Scanner IA Médicament */
         .ai-card {
             background: white;
             border-radius: 20px;
@@ -761,7 +761,7 @@
         .app-modal-btn-primary { background: var(--primary); color: white; }
         .app-modal-btn-secondary { background: #e2e8f0; color: var(--text-main); }
 
-        /* أزرار لوحة الأرقام السفلية لتحديد الوقت */
+        /* Clavier numérique bas d'écran */
         .btn-dial {
             background: #f8fafc;
             border: 1.5px solid #cbd5e1;
@@ -830,7 +830,7 @@
     </header>
 
     <main class="container" id="userMainMenu">
-        <!-- شريط الطوارئ المباشر في الصفحة الرئيسية -->
+        <!-- Bouton d'urgence SOS -->
         <div class="sos-banner-card">
             <button class="btn-sos-call" onclick="callEmergencyContact()">
                 <span>📞</span>
@@ -850,7 +850,7 @@
         </div>
 
         <div class="big-buttons-list">
-            <!-- الزر الجديد: فحص وشرح الدواء بالذكاء الاصطناعي -->
+            <!-- Bouton IA Scanner de médicament -->
             <button class="btn-main-menu btn-theme-ai" onclick="openSubpage('aiscan', '📷 فحص الدواء بالذكاء الاصطناعي')">
                 <div class="btn-main-menu-text">
                     <div class="btn-main-menu-icon">📷</div>
@@ -915,7 +915,7 @@
             <h2 id="subpageTitle" style="font-size:1.2rem; color:var(--primary-dark); font-weight:900;"></h2>
         </div>
 
-        <!-- 1. قسم الذكاء الاصطناعي لفحص الأدوية -->
+        <!-- 1. Section IA Scanner Médicament -->
         <div id="aiScanContainer" style="display:none;">
             <div class="ai-card">
                 <p style="font-size:0.95rem; font-weight:800; color:#475569; margin-bottom:14px; text-align:center;">
@@ -943,7 +943,7 @@
             </div>
         </div>
 
-        <!-- 2. قسم جدول ومواعيد الأدوية -->
+        <!-- 2. Section Calendrier des Médicaments -->
         <div id="scheduleContainer" style="display:none;">
             <div class="notification-permission-box" id="notifPermissionBanner">
                 <p style="font-size:0.95rem; font-weight:800; color:#92400e;">🔔 لتصلك التنبيهات في وقتها على شاشة الهاتف، يرجى تفعيل الإشعارات:</p>
@@ -1090,7 +1090,7 @@
         </div>
     </div>
 
-    <!-- نافذة لوحة أرقام الوقت المنبثقة من الأسفل -->
+    <!-- Pavé numérique de sélection de l'heure -->
     <div id="timeModalOverlay" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6); z-index:400; align-items:flex-end; justify-content:center;">
         <div style="background:white; width:100%; max-width:480px; border-radius:24px 24px 0 0; padding:20px; text-align:center; box-shadow:0 -10px 25px rgba(0,0,0,0.2); animation: slideUp 0.2s ease-out;">
             <div style="width:40px; height:4px; background:#cbd5e1; border-radius:10px; margin:0 auto 12px auto;"></div>
@@ -1132,6 +1132,9 @@
         firebase.initializeApp(firebaseConfig);
         const cloudDb = firebase.firestore();
 
+        // Clé API Gemini Studio
+        const GEMINI_API_KEY = "AQ.Ab8RN6K922nEFIJZy_ICoHrxG3maukPpuSVQgpx3zJ_dNV6Gog";
+
         let localDb;
         let currentPhone = localStorage.getItem('user_phone') || '';
         let userRole = localStorage.getItem('user_role') || 'user';
@@ -1140,14 +1143,14 @@
         let lastAnalyzedText = "";
         let enteredDigits = "";
 
-        // إدارة زر الرجوع في أندرويد
+        // Gestion du bouton physique Retour Android
         window.addEventListener('load', () => {
             history.replaceState({ screen: 'home' }, '');
         });
 
         window.addEventListener('popstate', (e) => {
             if (e.state && e.state.screen === 'subpage') {
-                // البقاء في الصفحة الفرعية
+                // Reste dans la page
             } else {
                 backToMainMenu(false);
             }
@@ -1448,7 +1451,7 @@
             }
         }
 
-        // --- لوحة الأرقام المنبثقة من الأسفل لكتابة الوقت ---
+        // Pavé numérique pour le temps
         function openTimePickerModal() {
             enteredDigits = "";
             document.getElementById('keypadDisplay').textContent = "-- : --";
@@ -1635,7 +1638,7 @@
             };
         }
 
-        // --- ميزة فحص الدواء بالذكاء الاصطناعي (محدثة ومصححة) ---
+        // Traitement photo & appel IA Gemini
         function processAiDrugImage(e) {
             const file = e.target.files[0];
             if (!file) return;
@@ -1676,20 +1679,30 @@
             loader.style.display = 'block';
             panel.style.display = 'none';
 
-            const activeKey = firebaseConfig.apiKey;
-            const prompt = "أنت صيدلي خبير ومساعد موجه لكبار السن. انظر للصورة بدقة وتعرف على الدواء واكتب باللغة العربية البسيطة:\n1. اسم الدواء وقوته ونوعه (مرهم، حبوب، شراب).\n2. دواعي الاستعمال الرئيسية (لماذا يُستعمل؟).\n3. طريقة الاستعمال الصحيحة وتحذير مختصر.";
+            const prompt = "أنت صيدلي خبير ومساعد لكبار السن. انظر للصورة وتعرف على الدواء بدقة واكتب باللغة العربية البسيطة في أسطر واضحة:\n" +
+                           "1. اسم الدواء وقوته ونوعه (مرهم، أقراص، إلخ).\n" +
+                           "2. دواعي الاستعمال الرئيسية (لماذا يُستعمل؟).\n" +
+                           "3. طريقة الاستعمال وتنبيه مختصر.";
 
-            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${activeKey}`;
+            const url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent";
 
             try {
                 const res = await fetch(url, {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'x-goog-api-key': GEMINI_API_KEY
+                    },
                     body: JSON.stringify({
                         contents: [{
                             parts: [
                                 { text: prompt },
-                                { inline_data: { mime_type: "image/jpeg", data: base64Image } }
+                                {
+                                    inline_data: {
+                                        mime_type: "image/jpeg",
+                                        data: base64Image
+                                    }
+                                }
                             ]
                         }]
                     })
@@ -1704,17 +1717,17 @@
                     resultText.textContent = text;
                     panel.style.display = 'block';
                 } else if (data.error) {
-                    lastAnalyzedText = "تعذر الاتصال بالخدمة: " + (data.error.message || "يرجى التحقق من إعدادات المفتاح");
+                    lastAnalyzedText = "خطأ في الاتصال: " + (data.error.message || "يرجى التحقق من المفتاح");
                     resultText.textContent = lastAnalyzedText;
                     panel.style.display = 'block';
                 } else {
-                    lastAnalyzedText = "تعذر قراءة بيانات الدواء بدقة. يرجى التقاط صورة مقربة وواضحة للاسم.";
+                    lastAnalyzedText = "تعذر تحديد بيانات الدواء بوضوح، يرجى التقاط صورة مقربة للاسم.";
                     resultText.textContent = lastAnalyzedText;
                     panel.style.display = 'block';
                 }
             } catch(e) {
                 loader.style.display = 'none';
-                lastAnalyzedText = "حدث خطأ أثناء فحص الدواء، يرجى التأكد من اتصال الإنترنت وإعادة المحاولة.";
+                lastAnalyzedText = "تعذر الاتصال بالخدمة. تأكد من اتصال الهاتف بالإنترنت.";
                 resultText.textContent = lastAnalyzedText;
                 panel.style.display = 'block';
             }
@@ -1731,11 +1744,11 @@
                 u.rate = 0.85;
                 window.speechSynthesis.speak(u);
             } else {
-                showAppAlert('تنبيه', 'خاصية تحويل النص إلى صوت غير مدعومة في هاتفك.');
+                showAppAlert('تنبيه', 'خاصية الصوت غير مدعومة في متصفحك.');
             }
         }
 
-        // --- زر الطوارئ المباشر ---
+        // Contact d'urgence SOS
         function updateSosDisplay() {
             const name = localStorage.getItem('hw_sos_name') || 'ابني';
             const label = document.getElementById('sosMainLabel');
