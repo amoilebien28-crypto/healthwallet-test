@@ -179,6 +179,45 @@
             margin: auto;
         }
 
+        /* زر الطوارئ المباشر */
+        .sos-banner-card {
+            background: #fef2f2;
+            border: 2px solid #fca5a5;
+            border-radius: 20px;
+            padding: 12px 16px;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.12);
+        }
+        .btn-sos-call {
+            flex: 1;
+            background: var(--danger);
+            color: white;
+            border: none;
+            border-radius: 14px;
+            padding: 12px 14px;
+            font-size: 1.05rem;
+            font-weight: 900;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        .btn-sos-edit {
+            background: white;
+            border: 1.5px solid #fca5a5;
+            color: #991b1b;
+            border-radius: 14px;
+            padding: 12px 14px;
+            font-size: 0.9rem;
+            font-weight: 800;
+            cursor: pointer;
+        }
+
         .daily-article-box {
             background: rgba(255, 255, 255, 0.95);
             border: 2px solid #10b981;
@@ -303,6 +342,12 @@
             background: linear-gradient(135deg, #f1f5f9, #e2e8f0);
             color: #334155;
             border: 2px solid #cbd5e1;
+        }
+
+        .btn-theme-ai {
+            background: linear-gradient(135deg, #fdf2f8, #fbcfe8);
+            color: #9d174d;
+            border: 2px solid #f472b6;
         }
 
         .subpage-container {
@@ -479,11 +524,9 @@
         .med-item-card.taken {
             background: #f0fdf4;
             border-color: #86efac;
-            opacity: 0.75;
         }
 
         .med-item-card.taken h4 {
-            text-decoration: line-through;
             color: #166534;
         }
 
@@ -502,24 +545,42 @@
         .med-item-actions {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
         }
 
         .btn-check-med {
-            background: #e2e8f0;
-            border: none;
-            padding: 8px 14px;
-            border-radius: 20px;
-            font-size: 0.9rem;
+            background: #fee2e2;
+            border: 1.5px dashed #ef4444;
+            padding: 9px 12px;
+            border-radius: 16px;
+            font-size: 0.88rem;
             font-weight: 800;
             cursor: pointer;
-            color: #334155;
+            color: #991b1b;
             transition: all 0.2s ease;
         }
 
         .btn-check-med.active {
-            background: #22c55e;
+            background: #059669;
             color: white;
+            border: 1.5px solid #047857;
+        }
+
+        .time-shortcuts {
+            display: flex;
+            gap: 6px;
+            margin-bottom: 10px;
+        }
+        .time-shortcut-btn {
+            flex: 1;
+            padding: 8px 4px;
+            background: #f1f5f9;
+            border: 1.5px solid #cbd5e1;
+            border-radius: 10px;
+            font-weight: 800;
+            font-size: 0.82rem;
+            cursor: pointer;
+            color: #334155;
         }
 
         .bottom-action-bar {
@@ -561,6 +622,33 @@
             font-size: 0.95rem;
             font-weight: 800;
             cursor: pointer;
+        }
+
+        /* الذكاء الاصطناعي لفحص الأدوية */
+        .ai-card {
+            background: white;
+            border-radius: 20px;
+            padding: 18px;
+            border: 1.5px solid #fbcfe8;
+            box-shadow: 0 4px 14px rgba(0,0,0,0.04);
+            margin-bottom: 20px;
+        }
+        .ai-cam-zone {
+            border: 2.5px dashed #f472b6;
+            background: #fdf2f8;
+            border-radius: 18px;
+            padding: 22px;
+            text-align: center;
+            cursor: pointer;
+            margin-bottom: 14px;
+        }
+        .ai-result-panel {
+            display: none;
+            background: #ffffff;
+            border: 2px solid #059669;
+            border-radius: 16px;
+            padding: 16px;
+            margin-top: 14px;
         }
 
         #adminView {
@@ -706,6 +794,15 @@
     </header>
 
     <main class="container" id="userMainMenu">
+        <!-- شريط الطوارئ المباشر في الصفحة الرئيسية -->
+        <div class="sos-banner-card">
+            <button class="btn-sos-call" onclick="callEmergencyContact()">
+                <span>📞</span>
+                <span id="sosMainLabel">اتصال طوارئ بـ (ابني)</span>
+            </button>
+            <button class="btn-sos-edit" onclick="editEmergencyContact()">تعديل ⚙️</button>
+        </div>
+
         <div class="daily-article-box">
             <div class="daily-article-header">
                 <span>📢</span>
@@ -717,6 +814,15 @@
         </div>
 
         <div class="big-buttons-list">
+            <!-- الزر الجديد: فحص الدواء بالكاميرا والذكاء الاصطناعي -->
+            <button class="btn-main-menu btn-theme-ai" onclick="openSubpage('aiscan', '📷 فحص الدواء بالذكاء الاصطناعي')">
+                <div class="btn-main-menu-text">
+                    <div class="btn-main-menu-icon">📷</div>
+                    <span>فحص وشرح الدواء بالـ AI</span>
+                </div>
+                <span class="btn-main-menu-arrow">◀</span>
+            </button>
+
             <button class="btn-main-menu btn-theme-prescriptions" onclick="openSubpage('prescriptions', '📋 الوصفات الطبية')">
                 <div class="btn-main-menu-text">
                     <div class="btn-main-menu-icon">📋</div>
@@ -773,6 +879,34 @@
             <h2 id="subpageTitle" style="font-size:1.2rem; color:var(--primary-dark); font-weight:900;"></h2>
         </div>
 
+        <!-- قسم الذكاء الاصطناعي لفحص الأدوية -->
+        <div id="aiScanContainer" style="display:none;">
+            <div class="ai-card">
+                <p style="font-size:0.95rem; font-weight:800; color:#475569; margin-bottom:14px; text-align:center;">
+                    التقط صورة واضحة لاسم الدواء وسيشرح لك المساعد الذكي دواعي استعماله وطريقة تناوله فوراً.
+                </p>
+                <div class="ai-cam-zone" onclick="document.getElementById('aiDrugPhotoInput').click()">
+                    <span style="font-size:3rem;">📸</span>
+                    <p style="font-weight:900; font-size:1.1rem; color:#be185d; margin-top:8px;">اضغط هنا لفتح الكاميرا وتصوير العلبة</p>
+                    <input type="file" id="aiDrugPhotoInput" accept="image/*" capture="environment" style="display:none;" onchange="processAiDrugImage(event)">
+                </div>
+
+                <img id="aiPhotoPreview" style="display:none; width:100%; max-height:240px; border-radius:14px; object-fit:contain; margin-bottom:12px;" alt="صورة الدواء">
+
+                <div id="aiLoader" style="display:none; text-align:center; padding:15px; font-weight:900; color:var(--primary);">
+                    ⏳ جارٍ فحص وتحليل الدواء بالذكاء الاصطناعي... انتظر قليلاً.
+                </div>
+
+                <div id="aiResultPanel" class="ai-result-panel">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                        <h4 style="color:var(--primary-dark); font-weight:900; font-size:1.1rem;">📋 نتيجة الفحص والتحليل</h4>
+                        <button onclick="readAiTextVoice()" style="background:#e0f2fe; border:1px solid #7dd3fc; border-radius:10px; padding:6px 12px; font-weight:900; color:#0369a1; cursor:pointer;">🔊 استماع</button>
+                    </div>
+                    <div id="aiResultText" style="line-height:1.65; font-size:1.02rem; font-weight:800; color:#1e293b; white-space:pre-wrap;"></div>
+                </div>
+            </div>
+        </div>
+
         <div id="scheduleContainer" style="display:none;">
             <div class="notification-permission-box" id="notifPermissionBanner">
                 <p style="font-size:0.95rem; font-weight:800; color:#92400e;">🔔 لتصلك التنبيهات في وقتها على شاشة الهاتف، يرجى تفعيل الإشعارات:</p>
@@ -792,7 +926,13 @@
                     </select>
                 </div>
                 <div class="input-group">
-                    <label style="font-size:0.8rem; color:#64748b;">توقيت التنبيه بالدقيقة والساعة</label>
+                    <label style="font-size:0.8rem; color:#64748b;">تحديد سريع للوقت:</label>
+                    <div class="time-shortcuts">
+                        <button type="button" class="time-shortcut-btn" onclick="applyTimePreset('08:00')">الصباح 08:00</button>
+                        <button type="button" class="time-shortcut-btn" onclick="applyTimePreset('13:00')">الظهر 13:00</button>
+                        <button type="button" class="time-shortcut-btn" onclick="applyTimePreset('20:00')">الليل 20:00</button>
+                    </div>
+                    <label style="font-size:0.8rem; color:#64748b;">أو اختر التوقيت بدقة:</label>
                     <input type="time" id="newMedTime" style="font-size:1.1rem;">
                 </div>
                 <button class="btn-auth" style="background:#f59e0b;" onclick="addNewMedSchedule()">إضافة إلى الجدول ⏰</button>
@@ -923,11 +1063,28 @@
         firebase.initializeApp(firebaseConfig);
         const cloudDb = firebase.firestore();
 
+        // مفتاح الذكاء الاصطناعي لفحص الأدوية
+        const GEMINI_API_KEY = "AQ.Ab8RN6Iow2IBmaUYZiEr3oonYTl655ztA3lW2epoV2vaIRMx6Q";
+        let lastAnalyzedText = "";
+
         let localDb;
         let currentPhone = localStorage.getItem('user_phone') || '';
         let userRole = localStorage.getItem('user_role') || 'user';
         let currentSubCategory = '';
         let swRegistration = null;
+
+        // إدارة زر الرجوع في أندرويد (Hardware Back Button)
+        window.addEventListener('load', () => {
+            history.replaceState({ screen: 'home' }, '');
+        });
+
+        window.addEventListener('popstate', (e) => {
+            if (e.state && e.state.screen === 'subpage') {
+                // البقاء في الصفحة الفرعية
+            } else {
+                backToMainMenu(false);
+            }
+        });
 
         if ('serviceWorker' in navigator) {
             navigator.serviceWorker.register('./sw.js').then(reg => {
@@ -970,18 +1127,22 @@
             document.getElementById('appModal').style.display = 'none';
         }
 
+        // تشغيل تنبيه صوتي واهتزاز قوي متكرر
         function playReminderBeep() {
+            if (navigator.vibrate) {
+                navigator.vibrate([700, 250, 700, 250, 700]);
+            }
             try {
                 const ctx = new (window.AudioContext || window.webkitAudioContext)();
                 const osc = ctx.createOscillator();
                 const gain = ctx.createGain();
                 osc.connect(gain);
                 gain.connect(ctx.destination);
-                osc.type = 'sine';
-                osc.frequency.setValueAtTime(587.33, ctx.currentTime);
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(880, ctx.currentTime);
                 gain.gain.setValueAtTime(0.3, ctx.currentTime);
                 osc.start();
-                osc.stop(ctx.currentTime + 0.4);
+                osc.stop(ctx.currentTime + 1.2);
             } catch(e) {}
         }
 
@@ -1007,7 +1168,7 @@
                     swRegistration.showNotification(title, {
                         body: bodyText,
                         icon: 'icon.png',
-                        vibrate: [200, 100, 200]
+                        vibrate: [300, 150, 300]
                     });
                 } else {
                     new Notification(title, {
@@ -1032,7 +1193,8 @@
             req.onsuccess = (e) => {
                 localDb = e.target.result;
                 checkSession();
-                setInterval(checkMedAlarms, 30000);
+                updateSosDisplay();
+                setInterval(checkMedAlarms, 20000);
             };
         }
 
@@ -1158,6 +1320,7 @@
             document.getElementById('photoBottomBar').style.display = 'none';
             listenToDailyArticle();
             syncCloudToLocal();
+            updateSosDisplay();
         }
 
         function listenToDailyArticle() {
@@ -1174,6 +1337,7 @@
         }
 
         function openSubpage(cat, title) {
+            history.pushState({ screen: 'subpage' }, '');
             currentSubCategory = cat;
             document.getElementById('userMainMenu').style.display = 'none';
             document.getElementById('subpageContainer').style.display = 'block';
@@ -1182,10 +1346,13 @@
             document.getElementById('cardsGrid').style.display = 'none';
             document.getElementById('directoryContainer').style.display = 'none';
             document.getElementById('scheduleContainer').style.display = 'none';
+            document.getElementById('aiScanContainer').style.display = 'none';
             document.getElementById('photoBottomBar').style.display = 'none';
             document.getElementById('emptyState').style.display = 'none';
 
-            if (cat === 'schedule') {
+            if (cat === 'aiscan') {
+                document.getElementById('aiScanContainer').style.display = 'block';
+            } else if (cat === 'schedule') {
                 document.getElementById('scheduleContainer').style.display = 'block';
                 if ('Notification' in window && Notification.permission === 'granted') {
                     document.getElementById('notifPermissionBanner').style.display = 'none';
@@ -1206,10 +1373,17 @@
             }
         }
 
-        function backToMainMenu() {
+        function backToMainMenu(triggerHistory = true) {
             document.getElementById('subpageContainer').style.display = 'none';
             document.getElementById('photoBottomBar').style.display = 'none';
             document.getElementById('userMainMenu').style.display = 'block';
+            if (triggerHistory && history.state && history.state.screen === 'subpage') {
+                history.back();
+            }
+        }
+
+        function applyTimePreset(timeStr) {
+            document.getElementById('newMedTime').value = timeStr;
         }
 
         function addNewMedSchedule() {
@@ -1271,7 +1445,7 @@
                         </div>
                         <div class="med-item-actions">
                             <button class="btn-check-med ${isTakenToday ? 'active' : ''}" onclick="toggleMedTaken(${med.id}, '${isTakenToday ? '' : todayStr}')">
-                                ${isTakenToday ? '✔ تم الشرب' : 'لم أشرب بعد'}
+                                ${isTakenToday ? 'تم الشرب بنجاح ✔' : 'لم أشرب بعد - اضغط هنا'}
                             </button>
                             <button class="btn-del" onclick="deleteMedSchedule(${med.id})">🗑️</button>
                         </div>
@@ -1329,11 +1503,115 @@
 
                             playReminderBeep();
                             sendSystemNotification('⏰ تذكير بموعد الدواء!', `حان الآن موعد شرب دواء: ${med.name}`);
-                            showAppAlert('⏰ تذكير بموعد الدواء!', `حان الآن موعد أخذ دواء: ${med.name}`);
+                            showAppAlert('⏰ تذكير بموعد الدواء!', `حان الآن موعد أخذ دواء: ${med.name}\nيرجى التناول وتأكيد الجرعة.`);
                         }
                     }
                 });
             };
+        }
+
+        // --- ميزة فحص الدواء بالذكاء الاصطناعي (Gemini Vision) ---
+        function processAiDrugImage(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = (evt) => {
+                const base64Data = evt.target.result.split(',')[1];
+                const preview = document.getElementById('aiPhotoPreview');
+                preview.src = evt.target.result;
+                preview.style.display = 'block';
+                callGeminiForMedScan(base64Data, file.type || 'image/jpeg');
+            };
+            reader.readAsDataURL(file);
+            e.target.value = '';
+        }
+
+        async function callGeminiForMedScan(base64Image, mimeType) {
+            const loader = document.getElementById('aiLoader');
+            const panel = document.getElementById('aiResultPanel');
+            const resultText = document.getElementById('aiResultText');
+
+            loader.style.display = 'block';
+            panel.style.display = 'none';
+
+            const prompt = "أنت صيدلي خبير ومساعد طبي لكبار السن. اقرأ اسم الدواء الموضح في الصورة وأجب باللغة العربية باختصار شديد وبنقاط واضحة:\n" +
+                "1. اسم الدواء وقوته.\n" +
+                "2. دواعي الاستعمال الرئيسية (لماذا يُستعمل؟).\n" +
+                "3. أهم نصيحة أو تحذير عند تناوله (مع الأكل، أو تأثيرات جانبية شائعة).";
+
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_API_KEY}`;
+
+            try {
+                const res = await fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        contents: [{
+                            parts: [
+                                { text: prompt },
+                                { inline_data: { mime_type: mimeType, data: base64Image } }
+                            ]
+                        }]
+                    })
+                });
+
+                const data = await res.json();
+                loader.style.display = 'none';
+
+                if (data.candidates && data.candidates[0].content.parts[0].text) {
+                    const text = data.candidates[0].content.parts[0].text;
+                    lastAnalyzedText = text;
+                    resultText.textContent = text;
+                    panel.style.display = 'block';
+                } else {
+                    resultText.textContent = "تعذر تحديد بيانات الدواء بوضوح. يرجى التقاط صورة مقربة وواضحة للاسم.";
+                    panel.style.display = 'block';
+                }
+            } catch(e) {
+                loader.style.display = 'none';
+                showAppAlert('خطأ', 'تعذر الاتصال بخادم التحليل. تأكد من توفر الإنترنت.');
+            }
+        }
+
+        function readAiTextVoice() {
+            if (!lastAnalyzedText || !('speechSynthesis' in window)) return;
+            window.speechSynthesis.cancel();
+            const u = new SpeechSynthesisUtterance(lastAnalyzedText);
+            u.lang = 'ar-SA';
+            u.rate = 0.9;
+            window.speechSynthesis.speak(u);
+        }
+
+        // --- زر الطوارئ المباشر ---
+        function updateSosDisplay() {
+            const name = localStorage.getItem('hw_sos_name') || 'ابني';
+            const label = document.getElementById('sosMainLabel');
+            if (label) label.textContent = `اتصال طوارئ بـ (${name})`;
+        }
+
+        function callEmergencyContact() {
+            const phone = localStorage.getItem('hw_sos_phone');
+            if (!phone) {
+                editEmergencyContact();
+                return;
+            }
+            window.location.href = `tel:${phone}`;
+        }
+
+        function editEmergencyContact() {
+            const currentName = localStorage.getItem('hw_sos_name') || 'ابني';
+            const currentPhoneNum = localStorage.getItem('hw_sos_phone') || '';
+
+            const newName = prompt('حدد صلة القرابة أو اسم الشخص المقرب:', currentName);
+            if (newName === null) return;
+            const newPhone = prompt('أدخل رقم هاتف الطوارئ:', currentPhoneNum);
+            if (newPhone === null) return;
+
+            localStorage.setItem('hw_sos_name', newName.trim() || 'المقرب');
+            localStorage.setItem('hw_sos_phone', normalizeDigits(newPhone.trim()));
+            updateSosDisplay();
+            showAppAlert('تم الحفظ', 'تم تحديث جهة اتصال الطوارئ بنجاح.');
         }
 
         function handleIncomingPhoto(e) {
