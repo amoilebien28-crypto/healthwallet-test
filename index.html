@@ -179,7 +179,6 @@
             margin: auto;
         }
 
-        /* Bannière d'urgence (SOS) */
         .sos-banner-card {
             background: #fef2f2;
             border: 2px solid #fca5a5;
@@ -583,7 +582,6 @@
             color: #334155;
         }
 
-        /* Affichage de l'heure grand format */
         .time-display-box {
             background: white;
             border: 2.5px solid #059669;
@@ -639,7 +637,6 @@
             cursor: pointer;
         }
 
-        /* Scanner IA Médicament */
         .ai-card {
             background: white;
             border-radius: 20px;
@@ -761,7 +758,6 @@
         .app-modal-btn-primary { background: var(--primary); color: white; }
         .app-modal-btn-secondary { background: #e2e8f0; color: var(--text-main); }
 
-        /* Clavier numérique bas d'écran */
         .btn-dial {
             background: #f8fafc;
             border: 1.5px solid #cbd5e1;
@@ -830,7 +826,6 @@
     </header>
 
     <main class="container" id="userMainMenu">
-        <!-- Bouton d'urgence SOS -->
         <div class="sos-banner-card">
             <button class="btn-sos-call" onclick="callEmergencyContact()">
                 <span>📞</span>
@@ -850,7 +845,6 @@
         </div>
 
         <div class="big-buttons-list">
-            <!-- Bouton IA Scanner de médicament -->
             <button class="btn-main-menu btn-theme-ai" onclick="openSubpage('aiscan', '📷 فحص الدواء بالذكاء الاصطناعي')">
                 <div class="btn-main-menu-text">
                     <div class="btn-main-menu-icon">📷</div>
@@ -915,7 +909,7 @@
             <h2 id="subpageTitle" style="font-size:1.2rem; color:var(--primary-dark); font-weight:900;"></h2>
         </div>
 
-        <!-- 1. Section IA Scanner Médicament -->
+        <!-- 1. القسم الخاص بالذكاء الاصطناعي لفحص الدواء -->
         <div id="aiScanContainer" style="display:none;">
             <div class="ai-card">
                 <p style="font-size:0.95rem; font-weight:800; color:#475569; margin-bottom:14px; text-align:center;">
@@ -943,7 +937,7 @@
             </div>
         </div>
 
-        <!-- 2. Section Calendrier des Médicaments -->
+        <!-- 2. جدول ومواعيد الأدوية -->
         <div id="scheduleContainer" style="display:none;">
             <div class="notification-permission-box" id="notifPermissionBanner">
                 <p style="font-size:0.95rem; font-weight:800; color:#92400e;">🔔 لتصلك التنبيهات في وقتها على شاشة الهاتف، يرجى تفعيل الإشعارات:</p>
@@ -1090,7 +1084,7 @@
         </div>
     </div>
 
-    <!-- Pavé numérique de sélection de l'heure -->
+    <!-- لوحة الأرقام السفلية لتحديد الوقت -->
     <div id="timeModalOverlay" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6); z-index:400; align-items:flex-end; justify-content:center;">
         <div style="background:white; width:100%; max-width:480px; border-radius:24px 24px 0 0; padding:20px; text-align:center; box-shadow:0 -10px 25px rgba(0,0,0,0.2); animation: slideUp 0.2s ease-out;">
             <div style="width:40px; height:4px; background:#cbd5e1; border-radius:10px; margin:0 auto 12px auto;"></div>
@@ -1132,8 +1126,8 @@
         firebase.initializeApp(firebaseConfig);
         const cloudDb = firebase.firestore();
 
-        // Clé API Gemini Studio
-        const GEMINI_API_KEY = "AQ.Ab8RN6K922nEFIJZy_ICoHrxG3maukPpuSVQgpx3zJ_dNV6Gog";
+        // Il-Kodiċi API ġdid ipprovdut
+        const GEMINI_API_KEY = "AQ.Ab8RN6JKQHBPjO2LxSa-J8Yk0GaJoeiSYgV7zyQqVZAhlQuMxg";
 
         let localDb;
         let currentPhone = localStorage.getItem('user_phone') || '';
@@ -1143,14 +1137,13 @@
         let lastAnalyzedText = "";
         let enteredDigits = "";
 
-        // Gestion du bouton physique Retour Android
         window.addEventListener('load', () => {
             history.replaceState({ screen: 'home' }, '');
         });
 
         window.addEventListener('popstate', (e) => {
             if (e.state && e.state.screen === 'subpage') {
-                // Reste dans la page
+                // jibqa' fis-subpage
             } else {
                 backToMainMenu(false);
             }
@@ -1451,7 +1444,6 @@
             }
         }
 
-        // Pavé numérique pour le temps
         function openTimePickerModal() {
             enteredDigits = "";
             document.getElementById('keypadDisplay').textContent = "-- : --";
@@ -1638,7 +1630,6 @@
             };
         }
 
-        // Traitement photo & appel IA Gemini
         function processAiDrugImage(e) {
             const file = e.target.files[0];
             if (!file) return;
@@ -1684,14 +1675,13 @@
                            "2. دواعي الاستعمال الرئيسية (لماذا يُستعمل؟).\n" +
                            "3. طريقة الاستعمال وتنبيه مختصر.";
 
-            const url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent";
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${encodeURIComponent(GEMINI_API_KEY)}`;
 
             try {
                 const res = await fetch(url, {
                     method: 'POST',
                     headers: {
-                        'Content-Type': 'application/json',
-                        'x-goog-api-key': GEMINI_API_KEY
+                        'Content-Type': 'application/json'
                     },
                     body: JSON.stringify({
                         contents: [{
@@ -1717,7 +1707,7 @@
                     resultText.textContent = text;
                     panel.style.display = 'block';
                 } else if (data.error) {
-                    lastAnalyzedText = "خطأ في الاتصال: " + (data.error.message || "يرجى التحقق من المفتاح");
+                    lastAnalyzedText = "خطأ: " + (data.error.message || "يرجى التحقق من المفتاح");
                     resultText.textContent = lastAnalyzedText;
                     panel.style.display = 'block';
                 } else {
@@ -1748,7 +1738,6 @@
             }
         }
 
-        // Contact d'urgence SOS
         function updateSosDisplay() {
             const name = localStorage.getItem('hw_sos_name') || 'ابني';
             const label = document.getElementById('sosMainLabel');
