@@ -1,1703 +1,765 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>محفظتي الصحية - نسخة التجربة</title>
-    <link rel="manifest" href="manifest.json">
-    <link rel="icon" type="image/png" href="icon.png">
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@500;700;800;900&display=swap" rel="stylesheet">
-    
-    <!-- Firebase CDN -->
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
-
-    <style>
-        :root {
-            --primary: #059669;
-            --primary-dark: #047857;
-            --bg-gradient: linear-gradient(135deg, #f0fdf4 0%, #e6fcf5 50%, #f4fbf7 100%);
-            --surface: rgba(255, 255, 255, 0.95);
-            --text-main: #0f172a;
-            --text-sub: #475569;
-            --border: #d1fae5;
-            --danger: #ef4444;
-            --success: #10b981;
-        }
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Tajawal', sans-serif;
-            -webkit-tap-highlight-color: transparent;
-            user-select: none;
-        }
-
-        body {
-            background: var(--bg-gradient);
-            background-attachment: fixed;
-            color: var(--text-main);
-            min-height: 100vh;
-        }
-
-        .auth-overlay {
-            position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: radial-gradient(circle at top, #064e3b, #022c22);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 200;
-            padding: 20px;
-        }
-
-        .auth-box {
-            background: white;
-            border-radius: 24px;
-            padding: 26px 22px;
-            width: 100%;
-            max-width: 360px;
-            text-align: center;
-            box-shadow: 0 16px 36px rgba(0,0,0,0.35);
-        }
-
-        .auth-box h2 {
-            font-size: 1.4rem;
-            color: var(--primary-dark);
-            margin-bottom: 16px;
-            font-weight: 900;
-        }
-
-        .auth-tabs {
-            display: flex;
-            margin-bottom: 18px;
-            border-bottom: 2px solid #e2e8f0;
-        }
-
-        .auth-tab-btn {
-            flex: 1;
-            padding: 10px;
-            border: none;
-            background: transparent;
-            font-weight: 800;
-            font-size: 0.95rem;
-            color: var(--text-sub);
-            cursor: pointer;
-            border-bottom: 3px solid transparent;
-        }
-
-        .auth-tab-btn.active {
-            color: var(--primary);
-            border-bottom-color: var(--primary);
-        }
-
-        .input-group {
-            margin-bottom: 14px;
-            text-align: right;
-        }
-
-        .input-group label {
-            display: block;
-            font-size: 0.85rem;
-            font-weight: 800;
-            margin-bottom: 6px;
-            color: var(--text-main);
-        }
-
-        .input-group input, .input-group textarea, .input-group select {
-            width: 100%;
-            padding: 13px 14px;
-            border: 2px solid #cbd5e1;
-            border-radius: 14px;
-            font-size: 1rem;
-            outline: none;
-            text-align: center;
-            font-weight: 700;
-            background: #f8fafc;
-        }
-
-        .input-group input:focus, .input-group textarea:focus, .input-group select:focus {
-            border-color: var(--primary);
-            background: #ffffff;
-        }
-
-        .input-group textarea {
-            text-align: right;
-            resize: none;
-            height: 95px;
-        }
-
-        .btn-auth {
-            width: 100%;
-            padding: 14px;
-            background: linear-gradient(135deg, #059669, #047857);
-            color: white;
-            border: none;
-            border-radius: 14px;
-            font-size: 1.05rem;
-            font-weight: 800;
-            cursor: pointer;
-            margin-top: 10px;
-            box-shadow: 0 4px 12px rgba(5, 150, 105, 0.3);
-        }
-
-        header {
-            background: linear-gradient(135deg, #059669, #047857);
-            color: white;
-            padding: 16px 20px;
-            position: sticky;
-            top: 0;
-            z-index: 30;
-            box-shadow: 0 4px 15px rgba(4, 120, 87, 0.2);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        header h1 {
-            font-size: 1.3rem;
-            font-weight: 900;
-            letter-spacing: 0.5px;
-        }
-
-        .btn-logout {
-            background: rgba(255,255,255,0.22);
-            color: white;
-            border: none;
-            padding: 6px 14px;
-            border-radius: 10px;
-            font-size: 0.85rem;
-            font-weight: 800;
-            cursor: pointer;
-            backdrop-filter: blur(4px);
-        }
-
-        .container {
-            padding: 16px;
-            max-width: 500px;
-            margin: auto;
-        }
-
-        .daily-article-box {
-            background: rgba(255, 255, 255, 0.95);
-            border: 2px solid #10b981;
-            border-radius: 20px;
-            padding: 18px;
-            margin-bottom: 20px;
-            box-shadow: 0 8px 20px rgba(16, 185, 129, 0.12);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .daily-article-box::before {
-            content: "🌿";
-            position: absolute;
-            top: -10px;
-            left: 10px;
-            font-size: 3.5rem;
-            opacity: 0.08;
-            pointer-events: none;
-        }
-
-        .daily-article-header {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-weight: 900;
-            color: var(--primary-dark);
-            font-size: 1.05rem;
-            margin-bottom: 10px;
-            border-bottom: 1.5px dashed #a7f3d0;
-            padding-bottom: 8px;
-        }
-
-        .daily-article-content {
-            font-size: 1.1rem;
-            line-height: 1.65;
-            color: #1e293b;
-            font-weight: 800;
-            white-space: pre-line;
-        }
-
-        .big-buttons-list {
-            display: flex;
-            flex-direction: column;
-            gap: 14px;
-        }
-
-        .btn-main-menu {
-            width: 100%;
-            border: none;
-            border-radius: 22px;
-            padding: 18px 20px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            cursor: pointer;
-            box-shadow: 0 8px 18px rgba(0,0,0,0.06);
-            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .btn-main-menu:active {
-            transform: scale(0.97);
-        }
-
-        .btn-main-menu-text {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-            font-size: 1.25rem;
-            font-weight: 900;
-        }
-
-        .btn-main-menu-icon {
-            font-size: 1.8rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 48px;
-            height: 48px;
-            border-radius: 14px;
-            background: rgba(255, 255, 255, 0.7);
-            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-        }
-
-        .btn-main-menu-arrow {
-            font-size: 1.3rem;
-            font-weight: 900;
-            opacity: 0.7;
-        }
-
-        .btn-theme-prescriptions {
-            background: linear-gradient(135deg, #e0f2fe, #bae6fd);
-            color: #0369a1;
-            border: 2px solid #7dd3fc;
-        }
-
-        .btn-theme-schedule {
-            background: linear-gradient(135deg, #fef3c7, #fde68a);
-            color: #b45309;
-            border: 2px solid #fcd34d;
-        }
-
-        .btn-theme-medicines {
-            background: linear-gradient(135deg, #ffedd5, #fed7aa);
-            color: #c2410c;
-            border: 2px solid #fdba74;
-        }
-
-        .btn-theme-tests {
-            background: linear-gradient(135deg, #f3e8ff, #e9d5ff);
-            color: #7e22ce;
-            border: 2px solid #d8b4fe;
-        }
-
-        .btn-theme-pharmacies {
-            background: linear-gradient(135deg, #ecfdf5, #a7f3d0);
-            color: #065f46;
-            border: 2px solid #6ee7b7;
-        }
-
-        .btn-theme-doctors {
-            background: linear-gradient(135deg, #f1f5f9, #e2e8f0);
-            color: #334155;
-            border: 2px solid #cbd5e1;
-        }
-
-        .subpage-container {
-            display: none;
-            padding-bottom: 95px;
-        }
-
-        .subpage-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 16px;
-        }
-
-        .btn-back {
-            background: white;
-            border: 1.5px solid #cbd5e1;
-            padding: 10px 16px;
-            border-radius: 14px;
-            font-weight: 900;
-            font-size: 1rem;
-            color: var(--text-main);
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.04);
-        }
-
-        .cards-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 12px;
-        }
-
-        .doc-card {
-            background: white;
-            border-radius: 16px;
-            overflow: hidden;
-            border: 1.5px solid #e2e8f0;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.04);
-        }
-
-        .doc-thumb {
-            width: 100%;
-            aspect-ratio: 1 / 1;
-            object-fit: cover;
-            cursor: pointer;
-            display: block;
-            background: #f1f5f9;
-        }
-
-        .doc-footer {
-            padding: 10px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: white;
-        }
-
-        .doc-date {
-            font-size: 0.85rem;
-            font-weight: 800;
-            color: var(--text-sub);
-        }
-
-        .btn-del {
-            background: #fee2e2;
-            color: var(--danger);
-            border: none;
-            width: 34px;
-            height: 34px;
-            border-radius: 50%;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.95rem;
-        }
-
-        .directory-card {
-            background: white;
-            border: 1.5px solid #d1fae5;
-            border-radius: 18px;
-            padding: 16px;
-            margin-bottom: 14px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.03);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .directory-info h4 {
-            font-size: 1.15rem;
-            color: #064e3b;
-            margin-bottom: 4px;
-            font-weight: 900;
-        }
-
-        .directory-info p {
-            font-size: 0.9rem;
-            color: var(--text-sub);
-            font-weight: 700;
-        }
-
-        .btn-call {
-            background: #dcfce7;
-            color: #15803d;
-            text-decoration: none;
-            padding: 10px 18px;
-            border-radius: 25px;
-            font-weight: 900;
-            font-size: 1rem;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            border: 1.5px solid #86efac;
-        }
-
-        .notification-permission-box {
-            background: #fffbeb;
-            border: 2px dashed #f59e0b;
-            border-radius: 16px;
-            padding: 14px;
-            margin-bottom: 16px;
-            text-align: center;
-        }
-
-        .btn-enable-notif {
-            background: #f59e0b;
-            color: white;
-            border: none;
-            padding: 10px 18px;
-            border-radius: 12px;
-            font-size: 0.95rem;
-            font-weight: 900;
-            cursor: pointer;
-            margin-top: 8px;
-            box-shadow: 0 3px 8px rgba(245, 158, 11, 0.3);
-        }
-
-        .schedule-section-header {
-            background: white;
-            border-radius: 16px;
-            padding: 14px;
-            margin-bottom: 16px;
-            border: 1.5px solid #fde68a;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.03);
-        }
-
-        .schedule-slot-title {
-            font-size: 1.15rem;
-            font-weight: 900;
-            color: #92400e;
-            margin: 16px 0 8px 0;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .med-item-card {
-            background: white;
-            border: 2px solid #e2e8f0;
-            border-radius: 16px;
-            padding: 14px 16px;
-            margin-bottom: 10px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 3px 6px rgba(0,0,0,0.02);
-            transition: all 0.2s ease;
-        }
-
-        .med-item-card.taken {
-            background: #f0fdf4;
-            border-color: #86efac;
-            opacity: 0.75;
-        }
-
-        .med-item-card.taken h4 {
-            text-decoration: line-through;
-            color: #166534;
-        }
-
-        .med-item-info h4 {
-            font-size: 1.1rem;
-            font-weight: 900;
-            margin-bottom: 4px;
-        }
-
-        .med-item-info span {
-            font-size: 0.85rem;
-            color: var(--text-sub);
-            font-weight: 700;
-        }
-
-        .med-item-actions {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .btn-check-med {
-            background: #e2e8f0;
-            border: none;
-            padding: 8px 14px;
-            border-radius: 20px;
-            font-size: 0.9rem;
-            font-weight: 800;
-            cursor: pointer;
-            color: #334155;
-            transition: all 0.2s ease;
-        }
-
-        .btn-check-med.active {
-            background: #22c55e;
-            color: white;
-        }
-
-        .bottom-action-bar {
-            position: fixed;
-            bottom: 0; left: 0; right: 0;
-            background: rgba(255, 255, 255, 0.94);
-            backdrop-filter: blur(10px);
-            padding: 14px 20px;
-            box-shadow: 0 -4px 15px rgba(0,0,0,0.06);
-            display: flex;
-            gap: 12px;
-            justify-content: center;
-            z-index: 40;
-        }
-
-        .btn-cam-direct {
-            flex: 1;
-            background: linear-gradient(135deg, #059669, #0284c7);
-            color: white;
-            border: none;
-            border-radius: 35px;
-            padding: 14px;
-            font-size: 1.05rem;
-            font-weight: 900;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            cursor: pointer;
-            box-shadow: 0 4px 12px rgba(5, 150, 105, 0.25);
-        }
-
-        .btn-gallery-direct {
-            background: #f1f5f9;
-            color: #334155;
-            border: 1.5px solid #cbd5e1;
-            border-radius: 35px;
-            padding: 14px 20px;
-            font-size: 0.95rem;
-            font-weight: 800;
-            cursor: pointer;
-        }
-
-        #adminView {
-            display: none;
-            padding-bottom: 35px;
-        }
-
-        .admin-card {
-            background: white;
-            border-radius: 20px;
-            padding: 18px;
-            margin-bottom: 18px;
-            border: 1.5px solid #d1fae5;
-            box-shadow: 0 4px 14px rgba(0,0,0,0.04);
-        }
-
-        .admin-card h3 {
-            font-size: 1.15rem;
-            color: var(--primary-dark);
-            margin-bottom: 14px;
-            font-weight: 900;
-        }
-
-        .lightbox {
-            position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0,0,0,0.92);
-            display: none;
-            align-items: center;
-            justify-content: center;
-            z-index: 300;
-            padding: 10px;
-        }
-
-        .lightbox img {
-            max-width: 100%;
-            max-height: 90vh;
-            border-radius: 12px;
-            object-fit: contain;
-        }
-
-        .app-modal-overlay {
-            position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(6, 78, 59, 0.5);
-            display: none;
-            align-items: center;
-            justify-content: center;
-            z-index: 500;
-            padding: 20px;
-            backdrop-filter: blur(2px);
-        }
-
-        .app-modal-box {
-            background: white;
-            border-radius: 20px;
-            padding: 24px 20px;
-            width: 100%;
-            max-width: 340px;
-            text-align: center;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-        }
-
-        .app-modal-box h3 {
-            font-size: 1.15rem;
-            color: var(--primary-dark);
-            margin-bottom: 10px;
-            font-weight: 900;
-        }
-
-        .app-modal-box p {
-            font-size: 1rem;
-            color: var(--text-main);
-            margin-bottom: 18px;
-            line-height: 1.6;
-            font-weight: 700;
-        }
-
-        .app-modal-actions {
-            display: flex;
-            gap: 10px;
-            justify-content: center;
-        }
-
-        .app-modal-btn {
-            flex: 1;
-            padding: 12px;
-            border-radius: 12px;
-            font-size: 0.95rem;
-            font-weight: 800;
-            border: none;
-            cursor: pointer;
-        }
-
-        .app-modal-btn-primary { background: var(--primary); color: white; }
-        .app-modal-btn-secondary { background: #e2e8f0; color: var(--text-main); }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>محفظتي الصحية - تجريبي 🧪</title>
+  <link rel="manifest" href="manifest.json" />
+  <meta name="theme-color" content="#059669" />
+  <style>
+    :root {
+      --primary: #059669;
+      --primary-dark: #047857;
+      --primary-light: #ecfdf5;
+      --danger: #dc2626;
+      --warning: #d97706;
+      --text: #1f2937;
+      --bg: #f9fafb;
+      --card-bg: #ffffff;
+      --border: #e5e7eb;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      user-select: none;
+    }
+
+    /* En-tête */
+    header {
+      background-color: var(--primary);
+      color: white;
+      padding: 16px;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    header h1 {
+      font-size: 1.25rem;
+      font-weight: 700;
+    }
+    .btn-header-back {
+      background: rgba(255, 255, 255, 0.2);
+      border: none;
+      color: white;
+      padding: 8px 14px;
+      border-radius: 8px;
+      font-weight: bold;
+      cursor: pointer;
+      display: none;
+    }
+
+    /* Conteneur principal */
+    main {
+      flex: 1;
+      padding: 16px;
+      max-width: 600px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    /* Cartes & Sections */
+    .view-section {
+      display: none;
+    }
+    .view-section.active {
+      display: block;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border-radius: 16px;
+      padding: 18px;
+      margin-bottom: 16px;
+      border: 1px solid var(--border);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    }
+
+    /* Bouton d'urgence */
+    .sos-card {
+      background: #fef2f2;
+      border: 2px solid #fca5a5;
+      text-align: center;
+      padding: 16px;
+    }
+    .sos-btn {
+      background-color: var(--danger);
+      color: white;
+      width: 100%;
+      padding: 16px;
+      font-size: 1.2rem;
+      font-weight: bold;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      box-shadow: 0 4px 6px rgba(220, 38, 38, 0.2);
+    }
+
+    /* Menu d'accueil */
+    .menu-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 14px;
+      margin-top: 10px;
+    }
+    .menu-item-btn {
+      background: white;
+      border: 2px solid var(--border);
+      border-radius: 16px;
+      padding: 20px;
+      font-size: 1.25rem;
+      font-weight: bold;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      cursor: pointer;
+      text-align: right;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.04);
+      transition: background 0.15s;
+    }
+    .menu-item-btn:active {
+      background: var(--primary-light);
+      border-color: var(--primary);
+    }
+    .menu-item-btn .icon {
+      font-size: 2rem;
+    }
+
+    /* Formulaires simples */
+    label {
+      display: block;
+      font-weight: bold;
+      margin-bottom: 6px;
+      font-size: 1.05rem;
+    }
+    input[type="text"], select {
+      width: 100%;
+      padding: 14px;
+      border-radius: 10px;
+      border: 2px solid var(--border);
+      font-size: 1.1rem;
+      margin-bottom: 14px;
+      background: white;
+    }
+
+    /* Sélecteur d'heure simplifié */
+    .time-presets {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+    .time-preset-btn {
+      flex: 1;
+      padding: 12px 6px;
+      background: #f3f4f6;
+      border: 1px solid #d1d5db;
+      border-radius: 8px;
+      font-weight: bold;
+      font-size: 0.95rem;
+      cursor: pointer;
+    }
+    .time-preset-btn.active {
+      background: var(--primary);
+      color: white;
+      border-color: var(--primary-dark);
+    }
+    .time-select-row {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+    .time-select-row select {
+      margin-bottom: 0;
+      font-weight: bold;
+      font-size: 1.2rem;
+      text-align: center;
+    }
+
+    .btn-submit {
+      width: 100%;
+      padding: 16px;
+      background-color: var(--primary);
+      color: white;
+      font-size: 1.15rem;
+      font-weight: bold;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+    }
+
+    /* Cartes médicaments */
+    .med-item {
+      background: white;
+      border-radius: 14px;
+      border: 2px solid var(--border);
+      padding: 16px;
+      margin-bottom: 14px;
+    }
+    .med-item.taken {
+      border-color: #10b981;
+      background: #f0fdf4;
+    }
+    .med-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+    .med-name {
+      font-size: 1.25rem;
+      font-weight: bold;
+    }
+    .med-time {
+      font-size: 1.1rem;
+      font-weight: bold;
+      color: #4b5563;
+      background: #e5e7eb;
+      padding: 4px 10px;
+      border-radius: 20px;
+    }
+    .btn-med-status {
+      width: 100%;
+      padding: 14px;
+      border-radius: 10px;
+      font-size: 1.1rem;
+      font-weight: bold;
+      cursor: pointer;
+      border: none;
+      transition: all 0.2s;
+    }
+    .btn-not-taken {
+      background-color: #fee2e2;
+      color: #991b1b;
+      border: 2px dashed #ef4444;
+    }
+    .btn-is-taken {
+      background-color: #059669;
+      color: white;
+    }
+
+    /* Section IA Médicament */
+    .ai-upload-box {
+      border: 2px dashed var(--primary);
+      background: var(--primary-light);
+      border-radius: 16px;
+      padding: 24px;
+      text-align: center;
+      cursor: pointer;
+      margin-bottom: 16px;
+    }
+    .ai-upload-box input {
+      display: none;
+    }
+    .preview-img {
+      max-width: 100%;
+      max-height: 250px;
+      border-radius: 12px;
+      display: none;
+      margin: 10px auto;
+    }
+    .ai-result-card {
+      display: none;
+      background: white;
+      border: 2px solid var(--primary);
+      border-radius: 14px;
+      padding: 16px;
+      margin-top: 14px;
+    }
+    .ai-loading {
+      display: none;
+      text-align: center;
+      font-weight: bold;
+      color: var(--primary);
+      padding: 20px;
+      font-size: 1.2rem;
+    }
+
+    /* Modal Alerte Alarme */
+    .alarm-modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.85);
+      z-index: 100;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .alarm-content {
+      background: white;
+      border-radius: 20px;
+      padding: 24px;
+      text-align: center;
+      max-width: 400px;
+      width: 100%;
+      border: 4px solid var(--danger);
+      animation: pulse 1s infinite;
+    }
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.02); }
+      100% { transform: scale(1); }
+    }
+  </style>
 </head>
 <body>
 
-    <div class="auth-overlay" id="authScreen" style="display:none;">
-        <div class="auth-box">
-            <h2>🌿 محفظتي الصحية</h2>
-            
-            <div class="auth-tabs" id="authTabsBar">
-                <button class="auth-tab-btn active" id="tabLoginBtn" onclick="switchAuthMode('login')">تسجيل الدخول</button>
-                <button class="auth-tab-btn" id="tabRegisterBtn" onclick="switchAuthMode('register')">حساب جديد</button>
-            </div>
+  <!-- En-tête -->
+  <header>
+    <button id="btnHeaderBack" class="btn-header-back" onclick="navigateBack()">← العودة</button>
+    <h1 id="headerTitle">محفظتي الصحية 🧪</h1>
+    <span style="font-size: 1.4rem;">🏥</span>
+  </header>
 
-            <div id="loginForm">
-                <div class="input-group">
-                    <label>رقم الهاتف / كود الإدارة</label>
-                    <input type="tel" id="loginPhone" placeholder="أدخل الرقم">
-                </div>
-                <div class="input-group">
-                    <label>رمز السر</label>
-                    <input type="password" id="loginPass" placeholder="رمز السر">
-                </div>
-                <button class="btn-auth" onclick="submitLogin()">دخول 🚪</button>
-            </div>
-
-            <div id="registerForm" style="display:none;">
-                <div class="input-group">
-                    <label>رقم الهاتف</label>
-                    <input type="tel" id="regPhone" placeholder="مثال: 98123456">
-                </div>
-                <div class="input-group">
-                    <label>رمز السر</label>
-                    <input type="password" id="regPass" placeholder="رمز السر">
-                </div>
-                <div class="input-group">
-                    <label>تأكيد رمز السر</label>
-                    <input type="password" id="regPassConfirm" placeholder="أعد رمز السر">
-                </div>
-                <button class="btn-auth" onclick="submitRegister()">تأكيد الحساب ✨</button>
-            </div>
-        </div>
-    </div>
-
-    <header>
-        <h1 id="headerTitle">🌿 محفظتي الصحية</h1>
-        <button class="btn-logout" onclick="logout()">خروج 🚪</button>
-    </header>
-
-    <main class="container" id="userMainMenu">
-        <div class="daily-article-box">
-            <div class="daily-article-header">
-                <span>📢</span>
-                <span>لوح الإعلانات والنصائح اليومية</span>
-            </div>
-            <div class="daily-article-content" id="dailyArticleText">
-                جاري تحميل الرسالة اليومية...
-            </div>
-        </div>
-
-        <div class="big-buttons-list">
-            <button class="btn-main-menu btn-theme-prescriptions" onclick="openSubpage('prescriptions', '📋 الوصفات الطبية')">
-                <div class="btn-main-menu-text">
-                    <div class="btn-main-menu-icon">📋</div>
-                    <span>الوصفات الطبية</span>
-                </div>
-                <span class="btn-main-menu-arrow">◀</span>
-            </button>
-
-            <button class="btn-main-menu btn-theme-schedule" onclick="openSubpage('schedule', '⏰ مواعيد وتذكير الأدوية')">
-                <div class="btn-main-menu-text">
-                    <div class="btn-main-menu-icon">⏰</div>
-                    <span>مواعيد شرب الأدوية</span>
-                </div>
-                <span class="btn-main-menu-arrow">◀</span>
-            </button>
-
-            <button class="btn-main-menu btn-theme-medicines" onclick="openSubpage('medicines', '💊 علب الأدوية')">
-                <div class="btn-main-menu-text">
-                    <div class="btn-main-menu-icon">💊</div>
-                    <span>علب الأدوية</span>
-                </div>
-                <span class="btn-main-menu-arrow">◀</span>
-            </button>
-
-            <button class="btn-main-menu btn-theme-tests" onclick="openSubpage('tests', '🔬 التحاليل الطبية')">
-                <div class="btn-main-menu-text">
-                    <div class="btn-main-menu-icon">🔬</div>
-                    <span>التحاليل الطبية</span>
-                </div>
-                <span class="btn-main-menu-arrow">◀</span>
-            </button>
-
-            <button class="btn-main-menu btn-theme-pharmacies" onclick="openSubpage('pharmacies', '🟢 الصيدليات المناوبة')">
-                <div class="btn-main-menu-text">
-                    <div class="btn-main-menu-icon">🟢</div>
-                    <span>الصيدليات المناوبة</span>
-                </div>
-                <span class="btn-main-menu-arrow">◀</span>
-            </button>
-
-            <button class="btn-main-menu btn-theme-doctors" onclick="openSubpage('doctors', '🩺 دليل الأطباء')">
-                <div class="btn-main-menu-text">
-                    <div class="btn-main-menu-icon">🩺</div>
-                    <span>دليل الأطباء</span>
-                </div>
-                <span class="btn-main-menu-arrow">◀</span>
-            </button>
-        </div>
-    </main>
-
-    <div class="container subpage-container" id="subpageContainer">
-        <div class="subpage-header">
-            <button class="btn-back" onclick="backToMainMenu()">➔ رجوع للرئيسية</button>
-            <h2 id="subpageTitle" style="font-size:1.2rem; color:var(--primary-dark); font-weight:900;"></h2>
-        </div>
-
-        <div id="scheduleContainer" style="display:none;">
-            <div class="notification-permission-box" id="notifPermissionBanner">
-                <p style="font-size:0.95rem; font-weight:800; color:#92400e;">🔔 لتصلك التنبيهات في وقتها على شاشة الهاتف، يرجى تفعيل الإشعارات:</p>
-                <button class="btn-enable-notif" onclick="requestNotificationAccess()">تفعيل الإشعارات الآن 🔔</button>
-            </div>
-
-            <div class="schedule-section-header">
-                <h3 style="font-size:1.05rem; font-weight:800; margin-bottom:10px; color:#b45309;">➕ إضافة دواء جديد لجدول اليوم</h3>
-                <div class="input-group">
-                    <input type="text" id="newMedName" placeholder="اسم الدواء (مثال: Doliprane)">
-                </div>
-                <div class="input-group">
-                    <select id="newMedSlot">
-                        <option value="morning">🌅 الصباح (مع الإفطار)</option>
-                        <option value="noon">☀️ وسط النهار (مع الغداء)</option>
-                        <option value="night">🌙 الليل (مع العشاء أو قبل النوم)</option>
-                    </select>
-                </div>
-                <div class="input-group">
-                    <label style="font-size:0.8rem; color:#64748b;">توقيت التنبيه بالدقيقة والساعة</label>
-                    <input type="time" id="newMedTime" style="font-size:1.1rem;">
-                </div>
-                <button class="btn-auth" style="background:#f59e0b;" onclick="addNewMedSchedule()">إضافة إلى الجدول ⏰</button>
-            </div>
-
-            <div class="schedule-slot-title">🌅 أدوية الصباح</div>
-            <div id="slot-morning-list"></div>
-
-            <div class="schedule-slot-title">☀️ أدوية وسط النهار</div>
-            <div id="slot-noon-list"></div>
-
-            <div class="schedule-slot-title">🌙 أدوية الليل</div>
-            <div id="slot-night-list"></div>
-        </div>
-
-        <div id="cardsGrid" class="cards-grid"></div>
-        <div id="directoryContainer" style="display:none;"></div>
-
-        <div id="emptyState" style="text-align:center; padding:50px 20px; color:#64748b; display:none;">
-            <div style="font-size: 3rem; margin-bottom: 8px;">📂</div>
-            <p style="font-weight:800; font-size:1.1rem;">لا توجد عناصر محفوظة هنا حالياً</p>
-        </div>
-    </div>
-
-    <div class="bottom-action-bar" id="photoBottomBar" style="display:none;">
-        <input type="file" id="directCamInput" accept="image/*" capture="environment" style="display:none;" onchange="handleIncomingPhoto(event)">
-        <input type="file" id="galleryInput" accept="image/*" style="display:none;" onchange="handleIncomingPhoto(event)">
-
-        <button class="btn-cam-direct" onclick="document.getElementById('directCamInput').click()">
-            <span>📸</span>
-            <span>التقاط صورة وحفظ</span>
+  <main>
+    <!-- ACCUEIL -->
+    <div id="viewHome" class="view-section active">
+      <!-- Bloc Appel d'Urgence -->
+      <div class="card sos-card">
+        <button class="sos-btn" onclick="makeEmergencyCall()">
+          <span>📞</span>
+          <span id="sosButtonLabel">اتصال طوارئ بابني</span>
         </button>
-        <button class="btn-gallery-direct" onclick="document.getElementById('galleryInput').click()">
-            من المعرض 🖼️
+      </div>
+
+      <!-- Menu Principal -->
+      <div class="menu-grid">
+        <button class="menu-item-btn" onclick="openSection('Meds')">
+          <span class="icon">⏰</span>
+          <div>
+            <div>أوقات ومواعيد الدواء</div>
+            <small style="color: #6b7280;">تنبيهات وأزرار واضحة للجرعات</small>
+          </div>
         </button>
+
+        <button class="menu-item-btn" onclick="openSection('AiScanner')">
+          <span class="icon">📷</span>
+          <div>
+            <div>تصوير وفحص الدواء بالذكاء الاصطناعي</div>
+            <small style="color: #6b7280;">صوّر العلبة لمعرفة استخدامها فوراً</small>
+          </div>
+        </button>
+
+        <button class="menu-item-btn" onclick="openSection('Settings')">
+          <span class="icon">⚙️</span>
+          <div>
+            <div>إعدادات جهة اتصال الطوارئ</div>
+            <small style="color: #6b7280;">تغيير رقم واسم الشخص المقرب</small>
+          </div>
+        </button>
+      </div>
     </div>
 
-    <main class="container" id="adminView">
-        <div style="background:#ecfdf5; border:1.5px solid #10b981; border-radius:14px; padding:14px; margin-bottom:18px; text-align:center; font-weight:900; color:#065f46;">
-            ⚙️ لوحة إدارة النظام العام
+    <!-- SECTION 1 : MÉDICAMENTS -->
+    <div id="viewMeds" class="view-section">
+      <div class="card">
+        <h2 style="margin-bottom: 14px;">إضافة دواء جديد</h2>
+        <label>اسم الدواء:</label>
+        <input type="text" id="medNameInput" placeholder="مثال: باراسيتامول" />
+
+        <label>وقت التناول:</label>
+        <div class="time-presets">
+          <button type="button" class="time-preset-btn" onclick="setTimePreset('08', '00')">الصباح (08:00)</button>
+          <button type="button" class="time-preset-btn" onclick="setTimePreset('13', '00')">الظهر (13:00)</button>
+          <button type="button" class="time-preset-btn" onclick="setTimePreset('20', '00')">الليل (20:00)</button>
         </div>
 
-        <div class="admin-card">
-            <h3>📢 تحديث لوح الإعلانات / المقال اليومي</h3>
-            <div class="input-group">
-                <textarea id="adminArticleInput" placeholder="اكتب هنا النصيحة اليومية أو الإعلان..."></textarea>
-            </div>
-            <button class="btn-auth" onclick="publishDailyArticle()">نشر المقال للجميع 🚀</button>
+        <div class="time-select-row">
+          <div style="flex:1;">
+            <label style="font-size:0.9rem;">الساعة:</label>
+            <select id="medHourSelect"></select>
+          </div>
+          <span style="font-size:1.5rem; font-weight:bold; margin-top:20px;">:</span>
+          <div style="flex:1;">
+            <label style="font-size:0.9rem;">الدقيقة:</label>
+            <select id="medMinuteSelect">
+              <option value="00">00</option>
+              <option value="15">15</option>
+              <option value="30">30</option>
+              <option value="45">45</option>
+            </select>
+          </div>
         </div>
 
-        <div class="admin-card">
-            <h3>🟢 إضافة صيدلية مناوبة جديدة</h3>
-            <div class="input-group">
-                <label>اسم الصيدلية</label>
-                <input type="text" id="adminPharmName" placeholder="مثال: صيدلية الأمل">
-            </div>
-            <div class="input-group">
-                <label>المنطقة / العنوان</label>
-                <input type="text" id="adminPharmCity" placeholder="مثال: حومة السوق">
-            </div>
-            <div class="input-group">
-                <label>وقت الحراسة / المناوبة</label>
-                <input type="text" id="adminPharmTiming" placeholder="مثال: ليلاً (من 20h إلى 08h)">
-            </div>
-            <div class="input-group">
-                <label>رقم الهاتف</label>
-                <input type="tel" id="adminPharmPhone" placeholder="مثال: 75650123">
-            </div>
-            <button class="btn-auth" onclick="publishNewPharmacy()">إضافة الصيدلية المناوبة 🟢</button>
-        </div>
+        <button class="btn-submit" onclick="addMedication()">حفظ وتفعيل التنبيه</button>
+      </div>
 
-        <div class="admin-card">
-            <h3>📋 الصيدليات المناوبة الحالية</h3>
-            <div id="adminPharmaciesList"></div>
-        </div>
-
-        <div class="admin-card">
-            <h3>👨‍⚕️ إضافة طبيب جديد للدليل العام</h3>
-            <div class="input-group">
-                <label>اسم الطبيب</label>
-                <input type="text" id="adminDocName" placeholder="مثال: د. منير بن سالم">
-            </div>
-            <div class="input-group">
-                <label>الاختصاص</label>
-                <input type="text" id="adminDocSpec" placeholder="مثال: طب عام / عيون">
-            </div>
-            <div class="input-group">
-                <label>المدينة</label>
-                <input type="text" id="adminDocCity" placeholder="مثال: جربة - حومة السوق">
-            </div>
-            <div class="input-group">
-                <label>رقم الهاتف</label>
-                <input type="tel" id="adminDocPhone" placeholder="مثال: 75650000">
-            </div>
-            <button class="btn-auth" onclick="publishNewDoctor()">إضافة الطبيب إلى الدليل ✨</button>
-        </div>
-
-        <div class="admin-card">
-            <h3>📋 قائمة الأطباء المنشورين</h3>
-            <div id="adminDoctorsList"></div>
-        </div>
-    </main>
-
-    <div class="lightbox" id="lightbox" onclick="this.style.display='none'">
-        <img id="lightboxImg" src="">
+      <div class="card">
+        <h2 style="margin-bottom: 12px;">قائمة الأدوية لليوم</h2>
+        <div id="medListContainer"></div>
+      </div>
     </div>
 
-    <div class="app-modal-overlay" id="appModal">
-        <div class="app-modal-box">
-            <h3 id="appModalTitle">إشعار</h3>
-            <p id="appModalMessage"></p>
-            <div class="app-modal-actions" id="appModalActions">
-                <button class="app-modal-btn app-modal-btn-primary" onclick="closeAppModal()">حسناً</button>
-            </div>
+    <!-- SECTION 2 : IA SCANNER MÉDICAMENT -->
+    <div id="viewAiScanner" class="view-section">
+      <div class="card">
+        <h2>📷 فحص الدواء عبر الكاميرا والذكاء الاصطناعي</h2>
+        <p style="color: #6b7280; margin: 8px 0 16px 0;">التقط صورة واضحة لعلبة الدواء أو الشريط وسيقوم النظام بشرحه لك ببساطة.</p>
+
+        <div class="ai-upload-box" onclick="document.getElementById('aiCameraInput').click()">
+          <span style="font-size: 3rem;">📸</span>
+          <p style="font-weight: bold; margin-top: 8px;">اضغط هنا لفتح الكاميرا والتقاط صورة</p>
+          <input type="file" id="aiCameraInput" accept="image/*" capture="environment" onchange="handleMedPhoto(event)" />
         </div>
+
+        <img id="aiPreviewImg" class="preview-img" alt="صورة الدواء" />
+
+        <div id="aiLoading" class="ai-loading">
+          ⏳ جارٍ التعرف على الدواء بواسطة الذكاء الاصطناعي... يرجى الانتظار بضع ثوانٍ.
+        </div>
+
+        <div id="aiResultCard" class="ai-result-card">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+            <h3 id="aiDrugTitle" style="color: var(--primary-dark);"></h3>
+            <button onclick="speakAiResult()" style="background: #e0f2fe; border: 1px solid #7dd3fc; border-radius: 8px; padding: 6px 12px; cursor: pointer; font-weight: bold;">🔊 استماع</button>
+          </div>
+          <div id="aiDrugExplanation" style="line-height: 1.6; font-size: 1.05rem; white-space: pre-wrap;"></div>
+        </div>
+      </div>
     </div>
 
-    <script>
-        const firebaseConfig = {
-            apiKey: "AIzaSyAdkhQijkc_oJ8MXONIh2KgQfUIAsZylDM",
-            authDomain: "mon-dossier-sante.firebaseapp.com",
-            projectId: "mon-dossier-sante",
-            storageBucket: "mon-dossier-sante.firebasestorage.app",
-            messagingSenderId: "706346502911",
-            appId: "1:706346502911:web:8653ff36e5ae2904139aca"
-        };
+    <!-- SECTION 3 : PARAMÈTRES URGENCE -->
+    <div id="viewSettings" class="view-section">
+      <div class="card">
+        <h2>إعدادات زر الطوارئ</h2>
+        <p style="color: #6b7280; margin-bottom: 14px;">حدد اسم ورقم هاتف الشخص المقرب ليتم الاتصال به مباشرة بنقرة واحدة.</p>
 
-        firebase.initializeApp(firebaseConfig);
-        const cloudDb = firebase.firestore();
+        <label>اسم الشخص المقرب:</label>
+        <input type="text" id="settingContactName" placeholder="مثال: ابني أحمد" />
 
-        let localDb;
-        let currentPhone = localStorage.getItem('user_phone') || '';
-        let userRole = localStorage.getItem('user_role') || 'user';
-        let currentSubCategory = '';
-        let swRegistration = null;
+        <label>رقم الهاتف:</label>
+        <input type="text" id="settingContactPhone" placeholder="مثال: 98123456" />
 
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('./sw.js').then(reg => {
-                swRegistration = reg;
-            }).catch(() => {});
+        <button class="btn-submit" onclick="saveEmergencyContact()">حفظ الإعدادات</button>
+      </div>
+    </div>
+  </main>
+
+  <!-- MODAL ALARME MÉDICAMENT -->
+  <div id="alarmModal" class="alarm-modal">
+    <div class="alarm-content">
+      <div style="font-size: 3.5rem;">🔔</div>
+      <h2 style="color: var(--danger); margin: 10px 0;">حان موعد تناول الدواء!</h2>
+      <p id="alarmDrugName" style="font-size: 1.3rem; font-weight: bold; margin-bottom: 20px;"></p>
+      <button class="btn-submit" style="background-color: var(--primary);" onclick="dismissAlarm()">أوقفت المنبه وسأتناول الدواء الآن</button>
+    </div>
+  </div>
+
+  <script>
+    // --- GESTION DU BOUTON RETOUR PHYSIQUE ANDROID ---
+    window.addEventListener('load', () => {
+      history.replaceState({ page: 'home' }, '');
+    });
+
+    window.addEventListener('popstate', (e) => {
+      if (e.state && e.state.page && e.state.page !== 'home') {
+        showView(e.state.page, false);
+      } else {
+        showView('home', false);
+      }
+    });
+
+    function navigateBack() {
+      history.back();
+    }
+
+    function openSection(pageName) {
+      history.pushState({ page: pageName }, '');
+      showView(pageName, false);
+    }
+
+    function showView(pageName, push = false) {
+      document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
+      const headerTitle = document.getElementById('headerTitle');
+      const btnBack = document.getElementById('btnHeaderBack');
+
+      if (pageName === 'home') {
+        document.getElementById('viewHome').classList.add('active');
+        headerTitle.textContent = 'محفظتي الصحية 🧪';
+        btnBack.style.display = 'none';
+      } else if (pageName === 'Meds') {
+        document.getElementById('viewMeds').classList.add('active');
+        headerTitle.textContent = 'مواعيد الأدوية';
+        btnBack.style.display = 'block';
+      } else if (pageName === 'AiScanner') {
+        document.getElementById('viewAiScanner').classList.add('active');
+        headerTitle.textContent = 'فحص الدواء بالذكاء الاصطناعي';
+        btnBack.style.display = 'block';
+      } else if (pageName === 'Settings') {
+        document.getElementById('viewSettings').classList.add('active');
+        headerTitle.textContent = 'إعدادات الطوارئ';
+        btnBack.style.display = 'block';
+      }
+    }
+
+    // --- INITIALISATION DU SÉLECTEUR D'HEURE ---
+    const hourSelect = document.getElementById('medHourSelect');
+    for (let i = 0; i < 24; i++) {
+      const h = i < 10 ? '0' + i : i;
+      const opt = document.createElement('option');
+      opt.value = h;
+      opt.textContent = h;
+      hourSelect.appendChild(opt);
+    }
+    hourSelect.value = "08";
+
+    function setTimePreset(h, m) {
+      document.getElementById('medHourSelect').value = h;
+      document.getElementById('medMinuteSelect').value = m;
+    }
+
+    // --- GESTION DES MÉDICAMENTS & STATUT DE PRISE ---
+    let medications = JSON.parse(localStorage.getItem('hw_meds') || '[]');
+
+    function renderMedList() {
+      const container = document.getElementById('medListContainer');
+      container.innerHTML = '';
+      if (medications.length === 0) {
+        container.innerHTML = '<p style="text-align: center; color: #9ca3af; padding: 10px;">لا توجد أدوية مسجلة حتى الآن.</p>';
+        return;
+      }
+
+      medications.forEach((med, index) => {
+        const item = document.createElement('div');
+        item.className = 'med-item ' + (med.taken ? 'taken' : '');
+        item.innerHTML = `
+          <div class="med-header">
+            <span class="med-name">${med.name}</span>
+            <span class="med-time">⏰ ${med.time}</span>
+          </div>
+          <button class="btn-med-status ${med.taken ? 'btn-is-taken' : 'btn-not-taken'}" onclick="toggleMedTaken(${index})">
+            ${med.taken ? 'تم شرب الدواء بنجاح ✔' : 'لم أشرب بعد - اضغط هنا عند التناول'}
+          </button>
+        `;
+        container.appendChild(item);
+      });
+    }
+
+    function addMedication() {
+      const name = document.getElementById('medNameInput').value.trim();
+      const h = document.getElementById('medHourSelect').value;
+      const m = document.getElementById('medMinuteSelect').value;
+      if (!name) {
+        alert('الرجاء كتابة اسم الدواء');
+        return;
+      }
+      const timeStr = `${h}:${m}`;
+      medications.push({ name, time: timeStr, taken: false });
+      localStorage.setItem('hw_meds', JSON.stringify(medications));
+      document.getElementById('medNameInput').value = '';
+      renderMedList();
+      alert('تمت إضافة الدواء بنجاح وسيعمل المنبه في وقته المحدد.');
+    }
+
+    function toggleMedTaken(index) {
+      medications[index].taken = !medications[index].taken;
+      localStorage.setItem('hw_meds', JSON.stringify(medications));
+      renderMedList();
+    }
+
+    // --- ALARME PUISSANTE & VIBRATION ---
+    let alarmAudioCtx = null;
+    let alarmInterval = null;
+
+    function playLoudAlarm() {
+      // Vibration répétée
+      if (navigator.vibrate) {
+        navigator.vibrate([800, 250, 800, 250, 800]);
+      }
+      // Synthétiseur audio Web Audio API
+      try {
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        if (!alarmAudioCtx) alarmAudioCtx = new AudioContext();
+        
+        const osc = alarmAudioCtx.createOscillator();
+        const gain = alarmAudioCtx.createGain();
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(880, alarmAudioCtx.currentTime); // Fréquence percutante
+        gain.gain.setValueAtTime(0.3, alarmAudioCtx.currentTime);
+        
+        osc.connect(gain);
+        gain.connect(alarmAudioCtx.destination);
+        osc.start();
+        osc.stop(alarmAudioCtx.currentTime + 1.2);
+      } catch (e) {
+        console.warn('Audio non disponible', e);
+      }
+    }
+
+    // Vérification chaque minute de l'heure des médicaments
+    setInterval(() => {
+      const now = new Date();
+      const currentH = now.getHours() < 10 ? '0' + now.getHours() : '' + now.getHours();
+      const currentM = now.getMinutes() < 10 ? '0' + now.getMinutes() : '' + now.getMinutes();
+      const currentTime = `${currentH}:${currentM}`;
+
+      medications.forEach(med => {
+        if (med.time === currentTime && !med.taken && now.getSeconds() < 10) {
+          triggerAlarm(med.name);
         }
+      });
+    }, 15000);
 
-        function normalizeDigits(str) {
-            if (!str) return '';
-            return String(str)
-                .replace(/[٠-٩]/g, d => d.charCodeAt(0) - 1632)
-                .replace(/[۰-۹]/g, d => d.charCodeAt(0) - 1776)
-                .trim();
-        }
+    function triggerAlarm(medName) {
+      document.getElementById('alarmDrugName').textContent = medName;
+      document.getElementById('alarmModal').style.display = 'flex';
+      playLoudAlarm();
+      if (!alarmInterval) {
+        alarmInterval = setInterval(playLoudAlarm, 3000);
+      }
+    }
 
-        function showAppAlert(title, message) {
-            document.getElementById('appModalTitle').textContent = title;
-            document.getElementById('appModalMessage').textContent = message;
-            document.getElementById('appModalActions').innerHTML = `
-                <button class="app-modal-btn app-modal-btn-primary" onclick="closeAppModal()">حسناً</button>
-            `;
-            document.getElementById('appModal').style.display = 'flex';
-        }
+    function dismissAlarm() {
+      document.getElementById('alarmModal').style.display = 'none';
+      if (alarmInterval) {
+        clearInterval(alarmInterval);
+        alarmInterval = null;
+      }
+      if (navigator.vibrate) navigator.vibrate(0);
+    }
 
-        function showAppConfirm(title, message, onConfirm) {
-            document.getElementById('appModalTitle').textContent = title;
-            document.getElementById('appModalMessage').textContent = message;
-            document.getElementById('appModalActions').innerHTML = `
-                <button class="app-modal-btn app-modal-btn-primary" id="modalConfirmBtn">تأكيد</button>
-                <button class="app-modal-btn app-modal-btn-secondary" onclick="closeAppModal()">إلغاء</button>
-            `;
-            document.getElementById('modalConfirmBtn').onclick = () => {
-                closeAppModal();
-                onConfirm();
-            };
-            document.getElementById('appModal').style.display = 'flex';
-        }
+    // --- ANALYSE DE MÉDICAMENT PAR IA (GEMINI API) ---
+    const GEMINI_API_KEY = "AQ.Ab8RN6Iow2IBmaUYZiEr3oonYTl655ztA3lW2epoV2vaIRMx6Q";
+    let lastAiText = "";
 
-        function closeAppModal() {
-            document.getElementById('appModal').style.display = 'none';
-        }
+    function handleMedPhoto(e) {
+      const file = e.target.files[0];
+      if (!file) return;
 
-        function playReminderBeep() {
-            try {
-                const ctx = new (window.AudioContext || window.webkitAudioContext)();
-                const osc = ctx.createOscillator();
-                const gain = ctx.createGain();
-                osc.connect(gain);
-                gain.connect(ctx.destination);
-                osc.type = 'sine';
-                osc.frequency.setValueAtTime(587.33, ctx.currentTime);
-                gain.gain.setValueAtTime(0.3, ctx.currentTime);
-                osc.start();
-                osc.stop(ctx.currentTime + 0.4);
-            } catch(e) {}
-        }
+      const reader = new FileReader();
+      reader.onload = function(evt) {
+        const base64Data = evt.target.result.split(',')[1];
+        const previewImg = document.getElementById('aiPreviewImg');
+        previewImg.src = evt.target.result;
+        previewImg.style.display = 'block';
 
-        async function requestNotificationAccess() {
-            if (!('Notification' in window)) {
-                showAppAlert('تنبيه', 'متصفحك لا يدعم نظام إشعارات الويب.');
-                return;
-            }
+        analyzeDrugWithAI(base64Data, file.type || 'image/jpeg');
+      };
+      reader.readAsDataURL(file);
+    }
 
-            const perm = await Notification.requestPermission();
-            if (perm === 'granted') {
-                document.getElementById('notifPermissionBanner').style.display = 'none';
-                sendSystemNotification('🌿 محفظتي الصحية', 'تم تفعيل التنبيهات بنجاح! ستصلك إشعارات الأدوية في وقتها.');
-                playReminderBeep();
-            } else {
-                showAppAlert('تنبيه', 'لم يتم السماح بالإشعارات. يمكنك تفعيلها من إعدادات المتصفح.');
-            }
-        }
+    async function analyzeDrugWithAI(base64Image, mimeType) {
+      const loading = document.getElementById('aiLoading');
+      const resultCard = document.getElementById('aiResultCard');
+      const drugTitle = document.getElementById('aiDrugTitle');
+      const drugExplanation = document.getElementById('aiDrugExplanation');
 
-        function sendSystemNotification(title, bodyText) {
-            if (Notification.permission === 'granted') {
-                if (swRegistration && swRegistration.showNotification) {
-                    swRegistration.showNotification(title, {
-                        body: bodyText,
-                        icon: 'icon.png',
-                        vibrate: [200, 100, 200]
-                    });
-                } else {
-                    new Notification(title, {
-                        body: bodyText,
-                        icon: 'icon.png'
-                    });
+      loading.style.display = 'block';
+      resultCard.style.display = 'none';
+
+      const promptText = "أنت صيدلي خبير ومساعد موجه لكبار السن. انظر إلى صورة علبة الدواء هذه وأجب بالتنسيق التالي بدقة ووضوح:\n" +
+        "1. اسم الدواء وقوته.\n" +
+        "2. دواعي الاستعمال الرئيسية (لماذا يُستعمل؟ باختصار شديد وبسيط).\n" +
+        "3. نصيحة وتنبيه هام (مثل: يؤخذ مع الطعام أو خطر مع أدوية أخرى).\n" +
+        "اجعل الأسلوب واضحاً وبسيطاً وبلغة مفهومة ومريحة.";
+
+      const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_API_KEY}`;
+
+      try {
+        const response = await fetch(url, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            contents: [{
+              parts: [
+                { text: promptText },
+                {
+                  inline_data: {
+                    mime_type: mimeType,
+                    data: base64Image
+                  }
                 }
-            }
+              ]
+            }]
+          })
+        });
+
+        const data = await response.json();
+        loading.style.display = 'none';
+
+        if (data.candidates && data.candidates[0].content.parts[0].text) {
+          const answer = data.candidates[0].content.parts[0].text;
+          lastAiText = answer;
+          drugTitle.textContent = "📋 نتيجة الفحص والتحليل";
+          drugExplanation.textContent = answer;
+          resultCard.style.display = 'block';
+        } else {
+          drugTitle.textContent = "تنبيه";
+          drugExplanation.textContent = "تعذر تحديد بيانات الدواء بدقة. يرجى إعادة التقاط صورة مقربة وواضحة للاسم.";
+          resultCard.style.display = 'block';
         }
-
-        function initApp() {
-            const req = indexedDB.open('HealthWalletDB', 7);
-            req.onupgradeneeded = (e) => {
-                const db = e.target.result;
-                if (!db.objectStoreNames.contains('documents')) {
-                    db.createObjectStore('documents', { keyPath: 'id', autoIncrement: true });
-                }
-                if (!db.objectStoreNames.contains('med_schedules')) {
-                    db.createObjectStore('med_schedules', { keyPath: 'id', autoIncrement: true });
-                }
-            };
-            req.onsuccess = (e) => {
-                localDb = e.target.result;
-                checkSession();
-                setInterval(checkMedAlarms, 30000);
-            };
-        }
-
-        function checkSession() {
-            if (!currentPhone) {
-                document.getElementById('authScreen').style.display = 'flex';
-            } else {
-                document.getElementById('authScreen').style.display = 'none';
-                if (userRole === 'admin') {
-                    showAdminDashboard();
-                } else {
-                    showUserInterface();
-                }
-            }
-        }
-
-        function switchAuthMode(mode) {
-            const isLogin = mode === 'login';
-            document.getElementById('tabLoginBtn').classList.toggle('active', isLogin);
-            document.getElementById('tabRegisterBtn').classList.toggle('active', !isLogin);
-            document.getElementById('loginForm').style.display = isLogin ? 'block' : 'none';
-            document.getElementById('registerForm').style.display = isLogin ? 'none' : 'block';
-        }
-
-        async function submitLogin() {
-            const rawPhone = document.getElementById('loginPhone').value;
-            const rawPass = document.getElementById('loginPass').value;
-
-            const phone = normalizeDigits(rawPhone);
-            const pass = normalizeDigits(rawPass);
-
-            if (!phone || !pass) {
-                showAppAlert('تنبيه', 'الرجاء إدخال الرقم ورمز السر');
-                return;
-            }
-
-            if (phone === '7777' && pass === '1111') {
-                currentPhone = '7777';
-                userRole = 'admin';
-                localStorage.setItem('user_phone', '7777');
-                localStorage.setItem('user_role', 'admin');
-                document.getElementById('authScreen').style.display = 'none';
-                showAdminDashboard();
-                return;
-            }
-
-            try {
-                const userDoc = await cloudDb.collection('app_users').doc(phone).get();
-                if (!userDoc.exists) {
-                    showAppAlert('تنبيه', 'هذا الرقم غير مسجل، يرجى الضغط على "حساب جديد" أولاً.');
-                    return;
-                }
-
-                if (userDoc.data().password !== pass) {
-                    showAppAlert('خطأ', 'رمز السر غير صحيح');
-                    return;
-                }
-
-                currentPhone = phone;
-                userRole = 'user';
-                localStorage.setItem('user_phone', phone);
-                localStorage.setItem('user_role', 'user');
-                document.getElementById('authScreen').style.display = 'none';
-                showUserInterface();
-            } catch (e) {
-                showAppAlert('خطأ', 'تعذر الاتصال بقاعدة البيانات، تأكد من الإنترنت.');
-            }
-        }
-
-        async function submitRegister() {
-            const phone = normalizeDigits(document.getElementById('regPhone').value);
-            const pass = normalizeDigits(document.getElementById('regPass').value);
-            const passConf = normalizeDigits(document.getElementById('regPassConfirm').value);
-
-            if (!phone || !pass) {
-                showAppAlert('تنبيه', 'الرجاء إدخال رقم الهاتف ورمز السر');
-                return;
-            }
-
-            if (pass !== passConf) {
-                showAppAlert('تنبيه', 'رمز السر غير متطابق');
-                return;
-            }
-
-            try {
-                const userDoc = await cloudDb.collection('app_users').doc(phone).get();
-                if (userDoc.exists) {
-                    showAppAlert('تنبيه', 'الرقم مسجل بالفعل، قم بتسجيل الدخول');
-                    switchAuthMode('login');
-                    return;
-                }
-
-                await cloudDb.collection('app_users').doc(phone).set({
-                    phone: phone,
-                    password: pass,
-                    createdAt: Date.now()
-                });
-
-                currentPhone = phone;
-                userRole = 'user';
-                localStorage.setItem('user_phone', phone);
-                localStorage.setItem('user_role', 'user');
-                document.getElementById('authScreen').style.display = 'none';
-                showUserInterface();
-            } catch (e) {
-                showAppAlert('خطأ', 'تعذر إنشاء الحساب');
-            }
-        }
-
-        function logout() {
-            showAppConfirm('تسجيل الخروج', 'هل تريد بالتأكيد تسجيل الخروج؟', () => {
-                localStorage.removeItem('user_phone');
-                localStorage.removeItem('user_role');
-                location.reload();
-            });
-        }
-
-        function showUserInterface() {
-            document.getElementById('headerTitle').textContent = '🌿 محفظتي الصحية';
-            document.getElementById('userMainMenu').style.display = 'block';
-            document.getElementById('subpageContainer').style.display = 'none';
-            document.getElementById('adminView').style.display = 'none';
-            document.getElementById('photoBottomBar').style.display = 'none';
-            listenToDailyArticle();
-            syncCloudToLocal();
-        }
-
-        function listenToDailyArticle() {
-            cloudDb.collection('app_settings').doc('daily_article')
-                .onSnapshot(doc => {
-                    if (doc.exists && doc.data().text) {
-                        document.getElementById('dailyArticleText').textContent = doc.data().text;
-                    } else {
-                        document.getElementById('dailyArticleText').textContent = 'مرحباً بك في محفظتك الصحية. نتمنى لك دوام الصحة والعافية 🌿';
-                    }
-                }, () => {
-                    document.getElementById('dailyArticleText').textContent = 'مرحباً بك في محفظتك الصحية.';
-                });
-        }
-
-        function openSubpage(cat, title) {
-            currentSubCategory = cat;
-            document.getElementById('userMainMenu').style.display = 'none';
-            document.getElementById('subpageContainer').style.display = 'block';
-            document.getElementById('subpageTitle').textContent = title;
-
-            document.getElementById('cardsGrid').style.display = 'none';
-            document.getElementById('directoryContainer').style.display = 'none';
-            document.getElementById('scheduleContainer').style.display = 'none';
-            document.getElementById('photoBottomBar').style.display = 'none';
-            document.getElementById('emptyState').style.display = 'none';
-
-            if (cat === 'schedule') {
-                document.getElementById('scheduleContainer').style.display = 'block';
-                if ('Notification' in window && Notification.permission === 'granted') {
-                    document.getElementById('notifPermissionBanner').style.display = 'none';
-                } else {
-                    document.getElementById('notifPermissionBanner').style.display = 'block';
-                }
-                loadScheduleData();
-            } else if (cat === 'doctors') {
-                document.getElementById('directoryContainer').style.display = 'block';
-                loadDoctorsForUser();
-            } else if (cat === 'pharmacies') {
-                document.getElementById('directoryContainer').style.display = 'block';
-                loadPharmaciesForUser();
-            } else {
-                document.getElementById('cardsGrid').style.display = 'grid';
-                document.getElementById('photoBottomBar').style.display = 'flex';
-                loadCategoryPhotos();
-            }
-        }
-
-        function backToMainMenu() {
-            document.getElementById('subpageContainer').style.display = 'none';
-            document.getElementById('photoBottomBar').style.display = 'none';
-            document.getElementById('userMainMenu').style.display = 'block';
-        }
-
-        function addNewMedSchedule() {
-            const name = document.getElementById('newMedName').value.trim();
-            const slot = document.getElementById('newMedSlot').value;
-            const time = document.getElementById('newMedTime').value;
-
-            if (!name) {
-                showAppAlert('تنبيه', 'الرجاء إدخال اسم الدواء');
-                return;
-            }
-
-            const medRecord = {
-                phone: currentPhone,
-                name: name,
-                slot: slot,
-                time: time || '',
-                takenDate: '',
-                lastAlertedDate: '',
-                createdAt: Date.now()
-            };
-
-            const tx = localDb.transaction(['med_schedules'], 'readwrite');
-            tx.objectStore('med_schedules').add(medRecord);
-            tx.oncomplete = () => {
-                document.getElementById('newMedName').value = '';
-                document.getElementById('newMedTime').value = '';
-                loadScheduleData();
-                showAppAlert('تم بنجاح', 'تمت إضافة الدواء إلى جدولك اليومي!');
-            };
-        }
-
-        function loadScheduleData() {
-            const morningList = document.getElementById('slot-morning-list');
-            const noonList = document.getElementById('slot-noon-list');
-            const nightList = document.getElementById('slot-night-list');
-
-            morningList.innerHTML = '';
-            noonList.innerHTML = '';
-            nightList.innerHTML = '';
-
-            const tx = localDb.transaction(['med_schedules'], 'readonly');
-            const store = tx.objectStore('med_schedules');
-            const req = store.getAll();
-
-            const todayStr = new Date().toISOString().slice(0, 10);
-
-            req.onsuccess = () => {
-                const items = req.result.filter(item => item.phone === currentPhone);
-
-                items.forEach(med => {
-                    const isTakenToday = med.takenDate === todayStr;
-                    const card = document.createElement('div');
-                    card.className = `med-item-card ${isTakenToday ? 'taken' : ''}`;
-                    card.innerHTML = `
-                        <div class="med-item-info">
-                            <h4>💊 ${med.name}</h4>
-                            <span>${med.time ? `⏰ التوقيت: ${med.time}` : 'حسب الحاجة مع الوجبة'}</span>
-                        </div>
-                        <div class="med-item-actions">
-                            <button class="btn-check-med ${isTakenToday ? 'active' : ''}" onclick="toggleMedTaken(${med.id}, '${isTakenToday ? '' : todayStr}')">
-                                ${isTakenToday ? '✔ تم الشرب' : 'لم أشرب بعد'}
-                            </button>
-                            <button class="btn-del" onclick="deleteMedSchedule(${med.id})">🗑️</button>
-                        </div>
-                    `;
-
-                    if (med.slot === 'morning') morningList.appendChild(card);
-                    else if (med.slot === 'noon') noonList.appendChild(card);
-                    else if (med.slot === 'night') nightList.appendChild(card);
-                });
-
-                if (morningList.children.length === 0) morningList.innerHTML = '<p style="color:#94a3b8; font-size:0.85rem; padding:4px;">لا توجد أدوية صباحية</p>';
-                if (noonList.children.length === 0) noonList.innerHTML = '<p style="color:#94a3b8; font-size:0.85rem; padding:4px;">لا توجد أدوية وسط النهار</p>';
-                if (nightList.children.length === 0) nightList.innerHTML = '<p style="color:#94a3b8; font-size:0.85rem; padding:4px;">لا توجد أدوية ليلية</p>';
-            };
-        }
-
-        function toggleMedTaken(id, newDateVal) {
-            const tx = localDb.transaction(['med_schedules'], 'readwrite');
-            const store = tx.objectStore('med_schedules');
-            const getReq = store.get(id);
-
-            getReq.onsuccess = () => {
-                const data = getReq.result;
-                data.takenDate = newDateVal;
-                store.put(data);
-            };
-
-            tx.oncomplete = () => loadScheduleData();
-        }
-
-        function deleteMedSchedule(id) {
-            showAppConfirm('حذف دواء', 'هل تريد إزالة هذا الدواء من جدولك اليومي؟', () => {
-                const tx = localDb.transaction(['med_schedules'], 'readwrite');
-                tx.objectStore('med_schedules').delete(id);
-                tx.oncomplete = () => loadScheduleData();
-            });
-        }
-
-        function checkMedAlarms() {
-            if (!localDb || !currentPhone) return;
-            const now = new Date();
-            const currentTimeStr = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
-            const todayStr = now.toISOString().slice(0, 10);
-
-            const tx = localDb.transaction(['med_schedules'], 'readwrite');
-            const store = tx.objectStore('med_schedules');
-            const req = store.getAll();
-
-            req.onsuccess = () => {
-                req.result.forEach(med => {
-                    if (med.phone === currentPhone && med.time === currentTimeStr) {
-                        if (med.takenDate !== todayStr && med.lastAlertedDate !== todayStr) {
-                            med.lastAlertedDate = todayStr;
-                            store.put(med);
-
-                            playReminderBeep();
-                            sendSystemNotification('⏰ تذكير بموعد الدواء!', `حان الآن موعد شرب دواء: ${med.name}`);
-                            showAppAlert('⏰ تذكير بموعد الدواء!', `حان الآن موعد أخذ دواء: ${med.name}`);
-                        }
-                    }
-                });
-            };
-        }
-
-        function handleIncomingPhoto(e) {
-            const file = e.target.files[0];
-            if (!file) return;
-
-            const reader = new FileReader();
-            reader.onload = (event) => {
-                const img = new Image();
-                img.onload = () => {
-                    const canvas = document.createElement('canvas');
-                    const MAX_SIZE = 950;
-                    let width = img.width;
-                    let height = img.height;
-
-                    if (width > height && width > MAX_SIZE) {
-                        height = Math.round((height * MAX_SIZE) / width);
-                        width = MAX_SIZE;
-                    } else if (height > MAX_SIZE) {
-                        width = Math.round((width * MAX_SIZE) / height);
-                        height = MAX_SIZE;
-                    }
-
-                    canvas.width = width;
-                    canvas.height = height;
-                    const ctx = canvas.getContext('2d');
-                    ctx.drawImage(img, 0, 0, width, height);
-
-                    const finalPhoto = canvas.toDataURL('image/jpeg', 0.72);
-                    saveDocument(finalPhoto);
-                };
-                img.src = event.target.result;
-            };
-            reader.readAsDataURL(file);
-            e.target.value = '';
-        }
-
-        function saveDocument(photoData) {
-            const today = new Date();
-            const record = {
-                phone: currentPhone,
-                category: currentSubCategory,
-                photo: photoData,
-                date: today.toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric' }),
-                timestamp: Date.now()
-            };
-
-            const tx = localDb.transaction(['documents'], 'readwrite');
-            tx.objectStore('documents').add(record);
-
-            tx.oncomplete = () => {
-                loadCategoryPhotos();
-                if (navigator.onLine) {
-                    cloudDb.collection('user_documents').add(record).catch(() => {});
-                }
-            };
-        }
-
-        function loadCategoryPhotos() {
-            const grid = document.getElementById('cardsGrid');
-            const empty = document.getElementById('emptyState');
-            grid.innerHTML = '';
-
-            const tx = localDb.transaction(['documents'], 'readonly');
-            const store = tx.objectStore('documents');
-            const req = store.getAll();
-
-            req.onsuccess = () => {
-                const items = req.result.filter(item => 
-                    item.category === currentSubCategory && item.phone === currentPhone
-                );
-
-                if (items.length === 0) {
-                    empty.style.display = 'block';
-                    return;
-                }
-                empty.style.display = 'none';
-
-                items.reverse().forEach(item => {
-                    const card = document.createElement('div');
-                    card.className = 'doc-card';
-                    card.innerHTML = `
-                        <img src="${item.photo}" class="doc-thumb" onclick="showLightbox('${item.photo}')" alt="مستند">
-                        <div class="doc-footer">
-                            <div class="doc-date">📅 ${item.date}</div>
-                            <button class="btn-del" onclick="deleteDoc(${item.id})">🗑️</button>
-                        </div>
-                    `;
-                    grid.appendChild(card);
-                });
-            };
-        }
-
-        function deleteDoc(id) {
-            showAppConfirm('تأكيد الحذف', 'هل أنت متأكد من حذف هذه الصورة؟', () => {
-                const tx = localDb.transaction(['documents'], 'readwrite');
-                tx.objectStore('documents').delete(id);
-                tx.oncomplete = () => loadCategoryPhotos();
-            });
-        }
-
-        function showLightbox(src) {
-            document.getElementById('lightboxImg').src = src;
-            document.getElementById('lightbox').style.display = 'flex';
-        }
-
-        async function syncCloudToLocal() {
-            if (!navigator.onLine || !currentPhone) return;
-
-            try {
-                const snap = await cloudDb.collection('user_documents')
-                    .where('phone', '==', currentPhone)
-                    .get();
-
-                if (!snap.empty) {
-                    const tx = localDb.transaction(['documents'], 'readwrite');
-                    const store = tx.objectStore('documents');
-                    const req = store.getAll();
-
-                    req.onsuccess = () => {
-                        const existingItems = req.result;
-                        const existingTimestamps = new Set(existingItems.map(item => item.timestamp));
-
-                        snap.forEach(doc => {
-                            const cloudData = doc.data();
-                            if (!existingTimestamps.has(cloudData.timestamp)) {
-                                store.add(cloudData);
-                            }
-                        });
-                    };
-                }
-            } catch (e) {}
-        }
-
-        async function loadDoctorsForUser() {
-            const container = document.getElementById('directoryContainer');
-            const empty = document.getElementById('emptyState');
-            container.innerHTML = '';
-
-            try {
-                const snap = await cloudDb.collection('public_doctors').orderBy('createdAt', 'desc').get();
-                if (snap.empty) {
-                    empty.style.display = 'block';
-                    return;
-                }
-                empty.style.display = 'none';
-
-                snap.forEach(doc => {
-                    const d = doc.data();
-                    const card = document.createElement('div');
-                    card.className = 'directory-card';
-                    card.innerHTML = `
-                        <div class="directory-info">
-                            <h4>👨‍⚕️ ${d.name}</h4>
-                            <p>${d.spec ? `🩺 ${d.spec}` : ''} ${d.city ? `• 📍 ${d.city}` : ''}</p>
-                        </div>
-                        <a href="tel:${d.phone}" class="btn-call">📞 اتصال</a>
-                    `;
-                    container.appendChild(card);
-                });
-            } catch (e) {
-                empty.style.display = 'block';
-            }
-        }
-
-        async function loadPharmaciesForUser() {
-            const container = document.getElementById('directoryContainer');
-            const empty = document.getElementById('emptyState');
-            container.innerHTML = '';
-
-            try {
-                const snap = await cloudDb.collection('public_pharmacies').orderBy('createdAt', 'desc').get();
-                if (snap.empty) {
-                    empty.style.display = 'block';
-                    return;
-                }
-                empty.style.display = 'none';
-
-                snap.forEach(doc => {
-                    const d = doc.data();
-                    const card = document.createElement('div');
-                    card.className = 'directory-card';
-                    card.innerHTML = `
-                        <div class="directory-info">
-                            <h4>🟢 ${d.name}</h4>
-                            <p>📍 ${d.city || ''} ${d.timing ? `• ⏰ ${d.timing}` : ''}</p>
-                        </div>
-                        <a href="tel:${d.phone}" class="btn-call">📞 اتصال</a>
-                    `;
-                    container.appendChild(card);
-                });
-            } catch (e) {
-                empty.style.display = 'block';
-            }
-        }
-
-        function showAdminDashboard() {
-            document.getElementById('headerTitle').textContent = 'لوحة إدارة النظام ⚙️';
-            document.getElementById('userMainMenu').style.display = 'none';
-            document.getElementById('subpageContainer').style.display = 'none';
-            document.getElementById('photoBottomBar').style.display = 'none';
-            document.getElementById('adminView').style.display = 'block';
-
-            cloudDb.collection('app_settings').doc('daily_article').get().then(doc => {
-                if (doc.exists && doc.data().text) {
-                    document.getElementById('adminArticleInput').value = doc.data().text;
-                }
-            });
-
-            loadPharmaciesForAdmin();
-            loadDoctorsForAdmin();
-        }
-
-        async function publishDailyArticle() {
-            const text = document.getElementById('adminArticleInput').value.trim();
-            if (!text) {
-                showAppAlert('تنبيه', 'الرجاء كتابة نص المقال أولاً');
-                return;
-            }
-
-            try {
-                await cloudDb.collection('app_settings').doc('daily_article').set({
-                    text: text,
-                    updatedAt: Date.now()
-                });
-                showAppAlert('تم بنجاح', 'تم تحديث المقال اليومي ويظهر الآن لجميع المستخدمين!');
-            } catch (e) {
-                showAppAlert('خطأ', 'تعذر نشر المقال');
-            }
-        }
-
-        async function publishNewPharmacy() {
-            const name = document.getElementById('adminPharmName').value.trim();
-            const city = document.getElementById('adminPharmCity').value.trim();
-            const timing = document.getElementById('adminPharmTiming').value.trim();
-            const phone = document.getElementById('adminPharmPhone').value.trim();
-
-            if (!name || !phone) {
-                showAppAlert('تنبيه', 'الرجاء إدخال اسم الصيدلية ورقم هاتفها');
-                return;
-            }
-
-            try {
-                await cloudDb.collection('public_pharmacies').add({
-                    name: name,
-                    city: city,
-                    timing: timing,
-                    phone: phone,
-                    createdAt: Date.now()
-                });
-                document.getElementById('adminPharmName').value = '';
-                document.getElementById('adminPharmCity').value = '';
-                document.getElementById('adminPharmTiming').value = '';
-                document.getElementById('adminPharmPhone').value = '';
-                showAppAlert('تم بنجاح', 'تمت إضافة الصيدلية المناوبة بنجاح!');
-                loadPharmaciesForAdmin();
-            } catch (e) {
-                showAppAlert('خطأ', 'تعذر حفظ الصيدلية');
-            }
-        }
-
-        async function loadPharmaciesForAdmin() {
-            const list = document.getElementById('adminPharmaciesList');
-            list.innerHTML = 'جاري التحميل...';
-
-            try {
-                const snap = await cloudDb.collection('public_pharmacies').orderBy('createdAt', 'desc').get();
-                if (snap.empty) {
-                    list.innerHTML = '<p style="color:#64748b; font-size:0.9rem;">لا توجد صيدليات مناوبة مسجلة حالياً</p>';
-                    return;
-                }
-                list.innerHTML = '';
-                snap.forEach(doc => {
-                    const d = doc.data();
-                    const item = document.createElement('div');
-                    item.className = 'directory-card';
-                    item.innerHTML = `
-                        <div class="directory-info">
-                            <h4>🟢 ${d.name} (${d.phone})</h4>
-                            <p>${d.city || ''} ${d.timing ? `• ${d.timing}` : ''}</p>
-                        </div>
-                        <button class="btn-del" onclick="deletePharmacyByAdmin('${doc.id}')">🗑️</button>
-                    `;
-                    list.appendChild(item);
-                });
-            } catch (e) {
-                list.innerHTML = 'خطأ في تحميل قائمة الصيدليات';
-            }
-        }
-
-        function deletePharmacyByAdmin(docId) {
-            showAppConfirm('حذف صيدلية', 'هل تريد بالتأكيد إزالة هذه الصيدلية من قائمة المناوبة؟', async () => {
-                await cloudDb.collection('public_pharmacies').doc(docId).delete();
-                loadPharmaciesForAdmin();
-            });
-        }
-
-        async function publishNewDoctor() {
-            const name = document.getElementById('adminDocName').value.trim();
-            const spec = document.getElementById('adminDocSpec').value.trim();
-            const city = document.getElementById('adminDocCity').value.trim();
-            const phone = document.getElementById('adminDocPhone').value.trim();
-
-            if (!name || !phone) {
-                showAppAlert('تنبيه', 'الرجاء إدخال اسم الطبيب ورقم هاتفه');
-                return;
-            }
-
-            try {
-                await cloudDb.collection('public_doctors').add({
-                    name: name,
-                    spec: spec,
-                    city: city,
-                    phone: phone,
-                    createdAt: Date.now()
-                });
-                document.getElementById('adminDocName').value = '';
-                document.getElementById('adminDocSpec').value = '';
-                document.getElementById('adminDocCity').value = '';
-                document.getElementById('adminDocPhone').value = '';
-                showAppAlert('تم بنجاح', 'تمت إضافة الطبيب إلى الدليل العام');
-                loadDoctorsForAdmin();
-            } catch (e) {
-                showAppAlert('خطأ', 'تعذر الحفظ');
-            }
-        }
-
-        async function loadDoctorsForAdmin() {
-            const list = document.getElementById('adminDoctorsList');
-            list.innerHTML = 'جاري التحميل...';
-
-            try {
-                const snap = await cloudDb.collection('public_doctors').orderBy('createdAt', 'desc').get();
-                if (snap.empty) {
-                    list.innerHTML = '<p style="color:#64748b; font-size:0.9rem;">لا يوجد أطباء مسجلون حالياً</p>';
-                    return;
-                }
-                list.innerHTML = '';
-                snap.forEach(doc => {
-                    const d = doc.data();
-                    const item = document.createElement('div');
-                    item.className = 'directory-card';
-                    item.innerHTML = `
-                        <div class="directory-info">
-                            <h4>👨‍⚕️ ${d.name} (${d.phone})</h4>
-                            <p>${d.spec || ''} ${d.city ? `• ${d.city}` : ''}</p>
-                        </div>
-                        <button class="btn-del" onclick="deleteDoctorByAdmin('${doc.id}')">🗑️</button>
-                    `;
-                    list.appendChild(item);
-                });
-            } catch (e) {
-                list.innerHTML = 'خطأ في تحميل القائمة';
-            }
-        }
-
-        function deleteDoctorByAdmin(docId) {
-            showAppConfirm('حذف طبيب', 'هل أنت متأكد من حذف هذا الطبيب من الدليل العام؟', async () => {
-                await cloudDb.collection('public_doctors').doc(docId).delete();
-                loadDoctorsForAdmin();
-            });
-        }
-
-        window.onload = initApp;
-    </script>
+      } catch (err) {
+        loading.style.display = 'none';
+        alert('حدث خطأ أثناء الاتصال بمحرك التحليل. تأكد من اتصال الإنترنت.');
+      }
+    }
+
+    function speakAiResult() {
+      if (!lastAiText) return;
+      if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+        const utter = new SpeechSynthesisUtterance(lastAiText);
+        utter.lang = 'ar-SA';
+        utter.rate = 0.9; // Rythme posé pour les seniors
+        window.speechSynthesis.speak(utter);
+      } else {
+        alert('خاصية النطق غير مدعومة على هذا المتصفح.');
+      }
+    }
+
+    // --- CONTACT D'URGENCE ---
+    function loadEmergencyContact() {
+      const name = localStorage.getItem('hw_sos_name') || 'ابني';
+      const phone = localStorage.getItem('hw_sos_phone') || '';
+      document.getElementById('sosButtonLabel').textContent = `اتصال طوارئ بـ (${name})`;
+      document.getElementById('settingContactName').value = name;
+      document.getElementById('settingContactPhone').value = phone;
+    }
+
+    function saveEmergencyContact() {
+      const name = document.getElementById('settingContactName').value.trim() || 'المقرب';
+      const phone = document.getElementById('settingContactPhone').value.trim();
+      localStorage.setItem('hw_sos_name', name);
+      localStorage.setItem('hw_sos_phone', phone);
+      loadEmergencyContact();
+      alert('تم حفظ جهة الاتصال بنجاح.');
+      navigateBack();
+    }
+
+    function makeEmergencyCall() {
+      const phone = localStorage.getItem('hw_sos_phone');
+      if (!phone) {
+        alert('يرجى أولاً ضبط رقم هاتف الطوارئ من قسم الإعدادات.');
+        openSection('Settings');
+        return;
+      }
+      window.location.href = `tel:${phone}`;
+    }
+
+    // Initialisation générale
+    renderMedList();
+    loadEmergencyContact();
+  </script>
 </body>
 </html>
