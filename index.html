@@ -1673,13 +1673,15 @@
             loader.style.display = 'block';
             panel.style.display = 'none';
 
-            const prompt = "أنت صيدلي خبير ومساعد لكبار السن. انظر للصورة وتعرف على الدواء بدقة واكتب باللغة العربية البسيطة في أسطر واضحة:\n" +
-                           "1. اسم الدواء وقوته ونوعه (مرهم، أقراص، إلخ).\n" +
-                           "2. دواعي الاستعمال الرئيسية (لماذا يُستعمل؟).\n" +
-                           "3. طريقة الاستعمال وتنبيه مختصر.";
+            // Instruction claire pour traduire et expliquer uniquement en arabe
+            const prompt = "أنت صيدلي خبير ومساعد طبي لكبار السن. انظر إلى صورة الدواء وتعرف عليه بدقة.\n" +
+                           "مهم جداً: اكتب الإجابة حصرياً باللغة العربية البسيطة والواضحة (ترجم كل المعلومات إلى العربية ولا تكتب بالفرنسية مطلقا):\n" +
+                           "1. اسم الدواء وقوته وشكله الصيدلاني (أقراص، مرهم، شراب...).\n" +
+                           "2. دواعي الاستعمال الرئيسية (لماذا يُستعمل هذا الدواء تحديداً وبشرح مبسط للغاية).\n" +
+                           "3. طريقة الاستعمال الصحيحة مع أهم تنبيه أو نصيحة لتناوله بأمان.";
 
-            // URL mise à jour avec gemini-3.8-flash comme demandé par Google
-            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.8-flash:generateContent?key=${encodeURIComponent(GEMINI_API_KEY)}`;
+            // Modèle officiel gemini-2.5-flash
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${encodeURIComponent(GEMINI_API_KEY)}`;
 
             try {
                 const res = await fetch(url, {
