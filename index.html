@@ -344,9 +344,9 @@
         }
 
         .btn-theme-ai {
-            background: linear-gradient(135deg, #fdf2f8, #fbcfe8);
-            color: #9d174d;
-            border: 2px solid #f472b6;
+            background: linear-gradient(135deg, #ecfdf5, #d1fae5);
+            color: #065f46;
+            border: 2px solid #34d399;
         }
 
         .subpage-container {
@@ -637,22 +637,86 @@
             cursor: pointer;
         }
 
-        /* تنسيق بطاقة البحث عن الدواء */
-        .ai-card {
+        /* --- واجهة نافذة المحادثة (الدردشة الطبية المباشرة) --- */
+        .chat-container-box {
             background: white;
-            border-radius: 20px;
-            padding: 16px;
+            border-radius: 22px;
             border: 1.5px solid #a7f3d0;
-            box-shadow: 0 4px 14px rgba(0,0,0,0.04);
-            margin-bottom: 20px;
+            display: flex;
+            flex-direction: column;
+            height: calc(100vh - 160px);
+            max-height: 600px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.05);
+            overflow: hidden;
         }
-        .ai-result-panel {
-            display: none;
-            background: #ffffff;
-            border: 2px solid #059669;
-            border-radius: 14px;
+        .chat-messages-area {
+            flex: 1;
             padding: 14px;
-            margin-top: 14px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            background: #f8fafc;
+        }
+        .chat-bubble {
+            max-width: 82%;
+            padding: 12px 14px;
+            border-radius: 16px;
+            font-size: 0.95rem;
+            font-weight: 700;
+            line-height: 1.6;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+        .chat-bubble.bot {
+            align-self: flex-start;
+            background: white;
+            color: #1e293b;
+            border: 1.5px solid #e2e8f0;
+            border-bottom-right-radius: 4px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.03);
+        }
+        .chat-bubble.user {
+            align-self: flex-end;
+            background: linear-gradient(135deg, #059669, #047857);
+            color: white;
+            border-bottom-left-radius: 4px;
+        }
+        .chat-input-area {
+            padding: 10px 12px;
+            background: white;
+            border-top: 1px solid #e2e8f0;
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+        .chat-input-field {
+            flex: 1;
+            padding: 12px 14px;
+            border: 2px solid #cbd5e1;
+            border-radius: 14px;
+            font-size: 0.95rem;
+            font-weight: 700;
+            outline: none;
+            background: #f8fafc;
+        }
+        .chat-input-field:focus {
+            border-color: var(--primary);
+            background: white;
+        }
+        .chat-btn-send {
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 14px;
+            padding: 12px 18px;
+            font-size: 1rem;
+            font-weight: 900;
+            cursor: pointer;
+        }
+        .chat-btn-send:disabled {
+            background: #94a3b8;
+            cursor: not-allowed;
         }
 
         #adminView {
@@ -837,11 +901,11 @@
         </div>
 
         <div class="big-buttons-list">
-            <!-- الزر محدث للبحث الفوري بالاسم -->
-            <button class="btn-main-menu btn-theme-ai" onclick="openSubpage('aiscan', '🔍 البحث عن دواء وشرحه')">
+            <!-- الزر محدث للدردشة والمساعد الصحي المباشر -->
+            <button class="btn-main-menu btn-theme-ai" onclick="openSubpage('chat', '💬 المساعد الصحي الذكي')">
                 <div class="btn-main-menu-text">
-                    <div class="btn-main-menu-icon">🔍</div>
-                    <span>البحث عن دواء وشرحه</span>
+                    <div class="btn-main-menu-icon">💬</div>
+                    <span>المساعد الصحي الذكي</span>
                 </div>
                 <span class="btn-main-menu-arrow">◀</span>
             </button>
@@ -902,25 +966,18 @@
             <h2 id="subpageTitle" style="font-size:1.2rem; color:var(--primary-dark); font-weight:900;"></h2>
         </div>
 
-        <!-- قسم البحث عن الدواء بالاسم فقط (سريع وفوري) -->
-        <div id="aiScanContainer" style="display:none;">
-            <div class="ai-card">
-                <p style="font-size:0.95rem; font-weight:800; color:#334155; margin-bottom:12px; text-align:center;">
-                    اكتب اسم الدواء وسيقدم لك شرحاً باللغة العربية فوراً:
-                </p>
-
-                <div style="display:flex; gap:8px;">
-                    <input type="text" id="medSearchInput" placeholder="مثال: Doliprane أو Mycoster..." style="flex:1; padding:12px 14px; border:2px solid #cbd5e1; border-radius:14px; font-weight:800; font-size:1rem; outline:none; text-align:right;">
-                    <button onclick="searchMedByName()" style="background:#059669; color:white; border:none; border-radius:14px; padding:0 20px; font-weight:900; font-size:1rem; cursor:pointer;">بحث 🔍</button>
+        <!-- نافذة المحادثة المباشرة مع المساعد الصحي الذكي -->
+        <div id="chatContainer" style="display:none;">
+            <div class="chat-container-box">
+                <div class="chat-messages-area" id="chatMessagesArea">
+                    <div class="chat-bubble bot">
+                        مرحباً بك! أنا مساعدك الصحي الذكي 🌿
+                        اكتب لي اسم أي دواء، أو اسألني عن دواعي استعماله، الجرعات، أو أي استفسار صحي وسأجيبك فوراً باللغة العربية.
+                    </div>
                 </div>
-
-                <div id="aiLoader" style="display:none; text-align:center; padding:16px; font-weight:900; color:var(--primary);">
-                    ⏳ جارٍ إحضار تفاصيل الدواء فوراً...
-                </div>
-
-                <div id="aiResultPanel" class="ai-result-panel">
-                    <h4 style="color:var(--primary-dark); font-weight:900; font-size:1.05rem; margin-bottom:8px;">📋 نتيجة البحث والشرح:</h4>
-                    <div id="aiResultText" style="line-height:1.7; font-size:1rem; font-weight:800; color:#1e293b; white-space:pre-wrap;"></div>
+                <div class="chat-input-area">
+                    <input type="text" id="chatInputField" class="chat-input-field" placeholder="اكتب سؤالك أو اسم الدواء هنا..." onkeydown="if(event.key==='Enter') sendChatMessage()">
+                    <button id="chatSendBtn" class="chat-btn-send" onclick="sendChatMessage()">إرسال 🚀</button>
                 </div>
             </div>
         </div>
@@ -1114,7 +1171,7 @@
         firebase.initializeApp(firebaseConfig);
         const cloudDb = firebase.firestore();
 
-        // مفتاح Gemini الصالح
+        // مفتاح Gemini المعتمد
         const GEMINI_API_KEY = "AQ.Ab8RN6JKQHBPjO2LxSa-J8Yk0GaJoeiSYgV7zyQqVZAhlQuMxg";
 
         let localDb;
@@ -1123,6 +1180,7 @@
         let currentSubCategory = '';
         let swRegistration = null;
         let enteredDigits = "";
+        let chatHistory = []; // سجل المحادثة للتفاعل المستمر
 
         // إدارة زر الرجوع في أندرويد
         window.addEventListener('load', () => {
@@ -1396,15 +1454,15 @@
             document.getElementById('cardsGrid').style.display = 'none';
             document.getElementById('directoryContainer').style.display = 'none';
             document.getElementById('scheduleContainer').style.display = 'none';
-            document.getElementById('aiScanContainer').style.display = 'none';
+            document.getElementById('chatContainer').style.display = 'none';
             document.getElementById('photoBottomBar').style.display = 'none';
             document.getElementById('emptyState').style.display = 'none';
 
-            if (cat === 'aiscan') {
-                document.getElementById('aiScanContainer').style.display = 'block';
-                // تفريغ خانة البحث عند الفتح والتركيز عليها
-                document.getElementById('medSearchInput').value = '';
-                document.getElementById('aiResultPanel').style.display = 'none';
+            if (cat === 'chat') {
+                document.getElementById('chatContainer').style.display = 'block';
+                setTimeout(() => {
+                    document.getElementById('chatInputField').focus();
+                }, 300);
             } else if (cat === 'schedule') {
                 document.getElementById('scheduleContainer').style.display = 'block';
                 if ('Notification' in window && Notification.permission === 'granted') {
@@ -1435,7 +1493,91 @@
             }
         }
 
-        // لوحة الأرقام السفلية لتحديد الوقت
+        // --- وظائف الدردشة والمساعد الصحي المباشر ---
+        async function sendChatMessage() {
+            const input = document.getElementById('chatInputField');
+            const userMsg = input.value.trim();
+            if (!userMsg) return;
+
+            const sendBtn = document.getElementById('chatSendBtn');
+            const messagesArea = document.getElementById('chatMessagesArea');
+
+            // عرض رسالة المستخدم
+            appendChatBubble(userMsg, 'user');
+            input.value = '';
+            input.disabled = true;
+            sendBtn.disabled = true;
+
+            // إظهار فقاعة الانتظار
+            const loaderBubble = appendChatBubble('⏳ جارٍ كتابة الرد...', 'bot');
+
+            // تجهيز السياق الصحي التوجيهي
+            const systemPrompt = "أنت مساعد صحي وصيدلي ذكي لكبار السن داخل تطبيق محفظتي الصحية.\n" +
+                                 "مهمتك: الإجابة على استفسارات المستخدمين وأسئلتهم عن الأدوية، الأعراض، الجرعات، والنصائح الصحية باللغة العربية الواضحة والبسيطة والمباشرة.\n" +
+                                 "اجعل إجاباتك مرتبة ومنظمة بنقاط واضحة وموجزة وتجنب المقدمات الإنشائية الطويلة.";
+
+            // إعداد تاريخ المحادثة
+            chatHistory.push({ role: 'user', parts: [{ text: userMsg }] });
+
+            const contentsToSend = [
+                { role: 'user', parts: [{ text: systemPrompt }] },
+                { role: 'model', parts: [{ text: 'أهلاً بك، أنا جاهز للإجابة وتقديم التوجيهات الصحية باللغة العربية البسيطة.' }] },
+                ...chatHistory
+            ];
+
+            const models = ['gemini-2.5-flash', 'gemini-1.5-flash', 'gemini-2.0-flash'];
+            let replyText = '';
+
+            for (const m of models) {
+                try {
+                    const url = `https://generativelanguage.googleapis.com/v1beta/models/${m}:generateContent?key=${encodeURIComponent(GEMINI_API_KEY)}`;
+                    const res = await fetch(url, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            contents: contentsToSend,
+                            generationConfig: {
+                                maxOutputTokens: 600,
+                                temperature: 0.3
+                            }
+                        })
+                    });
+
+                    const data = await res.json();
+                    if (data.candidates && data.candidates[0].content && data.candidates[0].content.parts[0].text) {
+                        replyText = data.candidates[0].content.parts[0].text;
+                        break;
+                    }
+                } catch (e) {
+                    // تجربة النموذج البديل
+                }
+            }
+
+            loaderBubble.remove();
+
+            if (replyText) {
+                appendChatBubble(replyText, 'bot');
+                chatHistory.push({ role: 'model', parts: [{ text: replyText }] });
+            } else {
+                appendChatBubble('عذراً، حدث ضغط مؤقت على الخادم. يرجى إعادة إرسال رسالتك بعد قليل.', 'bot');
+            }
+
+            input.disabled = false;
+            sendBtn.disabled = false;
+            input.focus();
+        }
+
+        function appendChatBubble(text, sender) {
+            const area = document.getElementById('chatMessagesArea');
+            const bubble = document.createElement('div');
+            bubble.className = `chat-bubble ${sender}`;
+            bubble.textContent = text;
+            area.appendChild(bubble);
+            area.scrollTop = area.scrollHeight;
+            return bubble;
+        }
+
+        // --- لوحة الأرقام السفلية لتحديد الوقت ---
         function openTimePickerModal() {
             enteredDigits = "";
             document.getElementById('keypadDisplay').textContent = "-- : --";
@@ -1621,72 +1763,6 @@
                 });
             };
         }
-
-        // --- البحث الفوري عن الدواء بالاسم فقط (فائق السرعة وبدون صور) ---
-        async function searchMedByName() {
-            const input = document.getElementById('medSearchInput');
-            const medName = input.value.trim();
-            if (!medName) {
-                showAppAlert('تنبيه', 'يرجى كتابة اسم الدواء أولاً.');
-                return;
-            }
-
-            const loader = document.getElementById('aiLoader');
-            const panel = document.getElementById('aiResultPanel');
-            const resultText = document.getElementById('aiResultText');
-
-            loader.style.display = 'block';
-            panel.style.display = 'none';
-
-            const prompt = `أنت صيدلي خبير ومساعد طبي لكبار السن. اشرح الدواء (${medName}) باللغة العربية البسيطة والمباشرة دون أي ترحيب في 3 أسطر فقط:\n` +
-                           `• الاسم ونوعه:\n` +
-                           `• دواعي الاستعمال:\n` +
-                           `• الجرعة وأهم تنبيه:`;
-
-            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.8-flash:generateContent?key=${encodeURIComponent(GEMINI_API_KEY)}`;
-
-            try {
-                const res = await fetch(url, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        contents: [{ parts: [{ text: prompt }] }],
-                        generationConfig: {
-                            maxOutputTokens: 600,
-                            temperature: 0.1
-                        }
-                    })
-                });
-
-                const data = await res.json();
-                loader.style.display = 'none';
-
-                if (data.candidates && data.candidates[0].content && data.candidates[0].content.parts[0].text) {
-                    resultText.textContent = data.candidates[0].content.parts[0].text;
-                    panel.style.display = 'block';
-                } else if (data.error) {
-                    resultText.textContent = "خطأ: " + (data.error.message || "يرجى التحقق من المفتاح");
-                    panel.style.display = 'block';
-                } else {
-                    resultText.textContent = "لم يتم العثور على بيانات دقيقة لهذا الاسم، تأكد من كتابة الاسم بصورة صحيحة.";
-                    panel.style.display = 'block';
-                }
-            } catch (e) {
-                loader.style.display = 'none';
-                resultText.textContent = "تعذر الاتصال بالخدمة، تأكد من اتصال هاتفك بالإنترنت.";
-                panel.style.display = 'block';
-            }
-        }
-
-        // إتاحة الضغط على زر Enter من لوحة المفاتيح لبدء البحث
-        document.addEventListener('DOMContentLoaded', () => {
-            const input = document.getElementById('medSearchInput');
-            if (input) {
-                input.addEventListener('keyup', (e) => {
-                    if (e.key === 'Enter') searchMedByName();
-                });
-            }
-        });
 
         // إعدادات الطوارئ
         function updateSosDisplay() {
