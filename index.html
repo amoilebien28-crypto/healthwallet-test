@@ -1126,7 +1126,7 @@
         firebase.initializeApp(firebaseConfig);
         const cloudDb = firebase.firestore();
 
-        // Clé API Gemini Studio valide
+        // مفتاح Gemini الصالح
         const GEMINI_API_KEY = "AQ.Ab8RN6JKQHBPjO2LxSa-J8Yk0GaJoeiSYgV7zyQqVZAhlQuMxg";
 
         let localDb;
@@ -1137,14 +1137,14 @@
         let lastAnalyzedText = "";
         let enteredDigits = "";
 
-        // Gestion du bouton physique Retour Android
+        // إدارة زر الرجوع في أندرويد
         window.addEventListener('load', () => {
             history.replaceState({ screen: 'home' }, '');
         });
 
         window.addEventListener('popstate', (e) => {
             if (e.state && e.state.screen === 'subpage') {
-                // Reste dans la page
+                // البقاء في الصفحة الفرعية
             } else {
                 backToMainMenu(false);
             }
@@ -1445,7 +1445,7 @@
             }
         }
 
-        // Pavé numérique pour le choix de l'heure
+        // لوحة الأرقام السفلية لتحديد الوقت
         function openTimePickerModal() {
             enteredDigits = "";
             document.getElementById('keypadDisplay').textContent = "-- : --";
@@ -1632,7 +1632,7 @@
             };
         }
 
-        // Traitement photo & appel IA Gemini
+        // فحص الدواء بالكاميرا والذكاء الاصطناعي
         function processAiDrugImage(e) {
             const file = e.target.files[0];
             if (!file) return;
@@ -1673,15 +1673,15 @@
             loader.style.display = 'block';
             panel.style.display = 'none';
 
-            // Instruction claire pour traduire et expliquer uniquement en arabe
+            // توجيه صارم للترجمة والشرح باللغة العربية حصراً
             const prompt = "أنت صيدلي خبير ومساعد طبي لكبار السن. انظر إلى صورة الدواء وتعرف عليه بدقة.\n" +
-                           "مهم جداً: اكتب الإجابة حصرياً باللغة العربية البسيطة والواضحة (ترجم كل المعلومات إلى العربية ولا تكتب بالفرنسية مطلقا):\n" +
-                           "1. اسم الدواء وقوته وشكله الصيدلاني (أقراص، مرهم، شراب...).\n" +
+                           "مهم جداً: اكتب الإجابة حصرياً باللغة العربية البسيطة والواضحة (ترجم كل المعلومات إلى العربية ولا تكتب بالفرنسية مطلقاً):\n" +
+                           "1. اسم الدواء وقوته وشكله الصيدلاني (أقراص، كبسولات، مرهم، شراب...).\n" +
                            "2. دواعي الاستعمال الرئيسية (لماذا يُستعمل هذا الدواء تحديداً وبشرح مبسط للغاية).\n" +
                            "3. طريقة الاستعمال الصحيحة مع أهم تنبيه أو نصيحة لتناوله بأمان.";
 
-            // Modèle officiel gemini-2.5-flash
-            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${encodeURIComponent(GEMINI_API_KEY)}`;
+            // استخدام النموذج الحديث المطلوب لتفادي الخطأ
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.8-flash:generateContent?key=${encodeURIComponent(GEMINI_API_KEY)}`;
 
             try {
                 const res = await fetch(url, {
@@ -1744,7 +1744,7 @@
             }
         }
 
-        // Contact d'urgence SOS
+        // إعدادات الطوارئ
         function updateSosDisplay() {
             const name = localStorage.getItem('hw_sos_name') || 'ابني';
             const label = document.getElementById('sosMainLabel');
