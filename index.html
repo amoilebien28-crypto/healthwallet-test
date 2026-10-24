@@ -637,28 +637,14 @@
             cursor: pointer;
         }
 
-        /* تنسيق مربع تصوير الدواء بعد تصغيره إلى شريط مدمج */
+        /* تنسيق بطاقة البحث عن الدواء */
         .ai-card {
             background: white;
-            border-radius: 18px;
-            padding: 14px;
-            border: 1.5px solid #fbcfe8;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.04);
+            border-radius: 20px;
+            padding: 16px;
+            border: 1.5px solid #a7f3d0;
+            box-shadow: 0 4px 14px rgba(0,0,0,0.04);
             margin-bottom: 20px;
-        }
-        .ai-cam-zone {
-            border: 2px dashed #f472b6;
-            background: #fdf2f8;
-            border-radius: 12px;
-            padding: 8px 12px;
-            text-align: center;
-            cursor: pointer;
-            margin-bottom: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            height: 48px;
         }
         .ai-result-panel {
             display: none;
@@ -666,7 +652,7 @@
             border: 2px solid #059669;
             border-radius: 14px;
             padding: 14px;
-            margin-top: 10px;
+            margin-top: 14px;
         }
 
         #adminView {
@@ -851,10 +837,11 @@
         </div>
 
         <div class="big-buttons-list">
-            <button class="btn-main-menu btn-theme-ai" onclick="openSubpage('aiscan', '📷 فحص الدواء بالذكاء الاصطناعي')">
+            <!-- الزر محدث للبحث الفوري بالاسم -->
+            <button class="btn-main-menu btn-theme-ai" onclick="openSubpage('aiscan', '🔍 البحث عن دواء وشرحه')">
                 <div class="btn-main-menu-text">
-                    <div class="btn-main-menu-icon">📷</div>
-                    <span>فحص وشرح الدواء بالـ AI</span>
+                    <div class="btn-main-menu-icon">🔍</div>
+                    <span>البحث عن دواء وشرحه</span>
                 </div>
                 <span class="btn-main-menu-arrow">◀</span>
             </button>
@@ -915,32 +902,30 @@
             <h2 id="subpageTitle" style="font-size:1.2rem; color:var(--primary-dark); font-weight:900;"></h2>
         </div>
 
-        <!-- 1. قسم الذكاء الاصطناعي (مربع تصوير مصغر وبدون زر استماع) -->
+        <!-- قسم البحث عن الدواء بالاسم فقط (سريع وفوري) -->
         <div id="aiScanContainer" style="display:none;">
             <div class="ai-card">
-                <p style="font-size:0.88rem; font-weight:800; color:#475569; margin-bottom:8px; text-align:center;">
-                    التقط صورة واضحة لاسم الدواء للشرح والترجمة فوراً:
+                <p style="font-size:0.95rem; font-weight:800; color:#334155; margin-bottom:12px; text-align:center;">
+                    اكتب اسم الدواء وسيقدم لك شرحاً باللغة العربية فوراً:
                 </p>
-                <div class="ai-cam-zone" onclick="document.getElementById('aiDrugPhotoInput').click()">
-                    <span style="font-size:1.3rem;">📸</span>
-                    <span style="font-weight:900; font-size:0.92rem; color:#be185d;">اضغط هنا لفتح الكاميرا وتصوير العلبة</span>
-                    <input type="file" id="aiDrugPhotoInput" accept="image/*" capture="environment" style="display:none;" onchange="processAiDrugImage(event)">
+
+                <div style="display:flex; gap:8px;">
+                    <input type="text" id="medSearchInput" placeholder="مثال: Doliprane أو Mycoster..." style="flex:1; padding:12px 14px; border:2px solid #cbd5e1; border-radius:14px; font-weight:800; font-size:1rem; outline:none; text-align:right;">
+                    <button onclick="searchMedByName()" style="background:#059669; color:white; border:none; border-radius:14px; padding:0 20px; font-weight:900; font-size:1rem; cursor:pointer;">بحث 🔍</button>
                 </div>
 
-                <img id="aiPhotoPreview" style="display:none; width:100%; max-height:190px; border-radius:12px; object-fit:contain; margin-bottom:8px;" alt="صورة الدواء">
-
-                <div id="aiLoader" style="display:none; text-align:center; padding:10px; font-weight:900; color:var(--primary);">
-                    ⏳ جارٍ فحص وتحليل الدواء بالذكاء الاصطناعي... انتظر قليلاً.
+                <div id="aiLoader" style="display:none; text-align:center; padding:16px; font-weight:900; color:var(--primary);">
+                    ⏳ جارٍ إحضار تفاصيل الدواء فوراً...
                 </div>
 
                 <div id="aiResultPanel" class="ai-result-panel">
-                    <h4 style="color:var(--primary-dark); font-weight:900; font-size:1.05rem; margin-bottom:8px;">📋 نتيجة الفحص والتحليل</h4>
-                    <div id="aiResultText" style="line-height:1.6; font-size:0.98rem; font-weight:800; color:#1e293b; white-space:pre-wrap;"></div>
+                    <h4 style="color:var(--primary-dark); font-weight:900; font-size:1.05rem; margin-bottom:8px;">📋 نتيجة البحث والشرح:</h4>
+                    <div id="aiResultText" style="line-height:1.7; font-size:1rem; font-weight:800; color:#1e293b; white-space:pre-wrap;"></div>
                 </div>
             </div>
         </div>
 
-        <!-- 2. قسم جدول ومواعيد الأدوية -->
+        <!-- جدول ومواعيد الأدوية -->
         <div id="scheduleContainer" style="display:none;">
             <div class="notification-permission-box" id="notifPermissionBanner">
                 <p style="font-size:0.95rem; font-weight:800; color:#92400e;">🔔 لتصلك التنبيهات في وقتها على شاشة الهاتف، يرجى تفعيل الإشعارات:</p>
@@ -1417,6 +1402,9 @@
 
             if (cat === 'aiscan') {
                 document.getElementById('aiScanContainer').style.display = 'block';
+                // تفريغ خانة البحث عند الفتح والتركيز عليها
+                document.getElementById('medSearchInput').value = '';
+                document.getElementById('aiResultPanel').style.display = 'none';
             } else if (cat === 'schedule') {
                 document.getElementById('scheduleContainer').style.display = 'block';
                 if ('Notification' in window && Notification.permission === 'granted') {
@@ -1634,46 +1622,15 @@
             };
         }
 
-        // فحص الدواء بالكاميرا وتصغير أبعاد الصورة لأقصى سرعة ممكنة
-        function processAiDrugImage(e) {
-            const file = e.target.files[0];
-            if (!file) return;
+        // --- البحث الفوري عن الدواء بالاسم فقط (فائق السرعة وبدون صور) ---
+        async function searchMedByName() {
+            const input = document.getElementById('medSearchInput');
+            const medName = input.value.trim();
+            if (!medName) {
+                showAppAlert('تنبيه', 'يرجى كتابة اسم الدواء أولاً.');
+                return;
+            }
 
-            const reader = new FileReader();
-            reader.onload = (evt) => {
-                const img = new Image();
-                img.onload = () => {
-                    const canvas = document.createElement('canvas');
-                    const MAX_WIDTH = 480;
-                    let width = img.width;
-                    let height = img.height;
-
-                    if (width > MAX_WIDTH) {
-                        height = Math.round((height * MAX_WIDTH) / width);
-                        width = MAX_WIDTH;
-                    }
-
-                    canvas.width = width;
-                    canvas.height = height;
-                    const ctx = canvas.getContext('2d');
-                    ctx.drawImage(img, 0, 0, width, height);
-                    
-                    const compressedBase64 = canvas.toDataURL('image/jpeg', 0.55);
-                    const base64Data = compressedBase64.split(',')[1];
-                    
-                    const preview = document.getElementById('aiPhotoPreview');
-                    preview.src = compressedBase64;
-                    preview.style.display = 'block';
-                    
-                    callGeminiForMedScan(base64Data);
-                };
-                img.src = evt.target.result;
-            };
-            reader.readAsDataURL(file);
-            e.target.value = '';
-        }
-
-        async function callGeminiForMedScan(base64Image) {
             const loader = document.getElementById('aiLoader');
             const panel = document.getElementById('aiResultPanel');
             const resultText = document.getElementById('aiResultText');
@@ -1681,35 +1638,22 @@
             loader.style.display = 'block';
             panel.style.display = 'none';
 
-            // أمر مباشر ومحدد يمنع الإطالة تماماً
-            const prompt = "تعرف على الدواء واكتب بالعربية ملخصاً من 3 أسطر فقط:\n" +
-                           "• الاسم والقوة:\n" +
-                           "• الاستعمال:\n" +
-                           "• الجرعة وتنبيه:";
+            const prompt = `أنت صيدلي خبير ومساعد طبي لكبار السن. اشرح الدواء (${medName}) باللغة العربية البسيطة والمباشرة دون أي ترحيب في 3 أسطر فقط:\n` +
+                           `• الاسم ونوعه:\n` +
+                           `• دواعي الاستعمال:\n` +
+                           `• الجرعة وأهم تنبيه:`;
 
             const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.8-flash:generateContent?key=${encodeURIComponent(GEMINI_API_KEY)}`;
 
             try {
                 const res = await fetch(url, {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
+                    headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
-                        contents: [{
-                            parts: [
-                                { text: prompt },
-                                {
-                                    inline_data: {
-                                        mime_type: "image/jpeg",
-                                        data: base64Image
-                                    }
-                                }
-                            ]
-                        }],
+                        contents: [{ parts: [{ text: prompt }] }],
                         generationConfig: {
-                            maxOutputTokens: 250,
-                            temperature: 0.0
+                            maxOutputTokens: 600,
+                            temperature: 0.1
                         }
                     })
                 });
@@ -1724,15 +1668,25 @@
                     resultText.textContent = "خطأ: " + (data.error.message || "يرجى التحقق من المفتاح");
                     panel.style.display = 'block';
                 } else {
-                    resultText.textContent = "تعذر تحديد بيانات الدواء بوضوح، يرجى التقاط صورة مقربة للاسم.";
+                    resultText.textContent = "لم يتم العثور على بيانات دقيقة لهذا الاسم، تأكد من كتابة الاسم بصورة صحيحة.";
                     panel.style.display = 'block';
                 }
-            } catch(e) {
+            } catch (e) {
                 loader.style.display = 'none';
-                resultText.textContent = "تعذر الاتصال بالخدمة. تأكد من اتصال الهاتف بالإنترنت.";
+                resultText.textContent = "تعذر الاتصال بالخدمة، تأكد من اتصال هاتفك بالإنترنت.";
                 panel.style.display = 'block';
             }
         }
+
+        // إتاحة الضغط على زر Enter من لوحة المفاتيح لبدء البحث
+        document.addEventListener('DOMContentLoaded', () => {
+            const input = document.getElementById('medSearchInput');
+            if (input) {
+                input.addEventListener('keyup', (e) => {
+                    if (e.key === 'Enter') searchMedByName();
+                });
+            }
+        });
 
         // إعدادات الطوارئ
         function updateSosDisplay() {
