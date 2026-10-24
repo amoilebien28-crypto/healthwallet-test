@@ -637,7 +637,7 @@
             cursor: pointer;
         }
 
-        /* --- واجهة محادثة المستخدم مع الإدارة --- */
+        /* --- واجهة شباك المراسلات للمستخدم والأدمن --- */
         .chat-container-box {
             background: white;
             border-radius: 22px;
@@ -659,7 +659,7 @@
             background: #f8fafc;
         }
         .chat-bubble {
-            max-width: 82%;
+            max-width: 84%;
             padding: 12px 14px;
             border-radius: 16px;
             font-size: 0.95rem;
@@ -715,7 +715,7 @@
             cursor: pointer;
         }
 
-        #adminView {
+        #adminView, #adminMessagesPage {
             display: none;
             padding-bottom: 35px;
         }
@@ -897,7 +897,7 @@
         </div>
 
         <div class="big-buttons-list">
-            <!-- الزر محدث للتواصل المباشر مع الإدارة -->
+            <!-- زر المحادثة والتواصل مع الإدارة -->
             <button class="btn-main-menu btn-theme-ai" onclick="openSubpage('chat', '💬 تواصل مع الإدارة / المشرف')">
                 <div class="btn-main-menu-text">
                     <div class="btn-main-menu-icon">💬</div>
@@ -962,7 +962,7 @@
             <h2 id="subpageTitle" style="font-size:1.2rem; color:var(--primary-dark); font-weight:900;"></h2>
         </div>
 
-        <!-- نافذة محادثة المستخدم مع الإدارة مباشرة -->
+        <!-- شباك مراسلات المستخدم مع الإدارة مباشرة -->
         <div id="chatContainer" style="display:none;">
             <div class="chat-container-box">
                 <div class="chat-messages-area" id="chatMessagesArea">
@@ -1045,31 +1045,23 @@
         </button>
     </div>
 
-    <!-- لوحة إدارة النظام (Admin) -->
+    <!-- الصفحة الرئيسية للوحة الإدارة (Admin View) -->
     <main class="container" id="adminView">
         <div style="background:#ecfdf5; border:1.5px solid #10b981; border-radius:14px; padding:14px; margin-bottom:18px; text-align:center; font-weight:900; color:#065f46;">
             ⚙️ لوحة إدارة النظام العام
         </div>
 
-        <!-- قسم رسائل ومحادثات المستخدمين الخاص بالأدمن -->
-        <div class="admin-card">
-            <h3>💬 رسائل واستفسارات المستخدمين</h3>
-            <p style="font-size:0.85rem; color:var(--text-sub); margin-bottom:12px; font-weight:700;">اضغط على أي مستخدم لقراءة استفساره والرد عليه فورياً:</p>
-            <div id="adminUserChatsList">جاري تحميل الرسائل...</div>
-
-            <!-- نافذة الدردشة والرد على المستخدم للأدمن -->
-            <div id="adminChatWindow" style="display:none; border:2px solid #a7f3d0; border-radius:16px; padding:12px; background:#f8fafc; margin-top:14px;">
-                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; border-bottom:1px solid #cbd5e1; padding-bottom:8px;">
-                    <h4 id="adminChatUserTitle" style="color:var(--primary-dark); font-weight:900; font-size:1rem;">محادثة مع: </h4>
-                    <button onclick="closeAdminChatWindow()" style="background:#fee2e2; color:#ef4444; border:none; border-radius:8px; padding:4px 10px; font-weight:800; cursor:pointer;">إغلاق ✖</button>
-                </div>
-                <div id="adminChatMessagesArea" style="max-height:280px; overflow-y:auto; display:flex; flex-direction:column; gap:8px; padding:8px; background:white; border-radius:12px; margin-bottom:10px; border:1px solid #cbd5e1;"></div>
-                <div style="display:flex; gap:8px;">
-                    <input type="text" id="adminReplyInput" placeholder="اكتب ردك هنا للمستخدم..." style="flex:1; padding:10px 12px; border:2px solid #cbd5e1; border-radius:12px; font-weight:700; outline:none;" onkeydown="if(event.key==='Enter') sendAdminReply()">
-                    <button onclick="sendAdminReply()" style="background:var(--primary); color:white; border:none; border-radius:12px; padding:10px 16px; font-weight:900; cursor:pointer;">إرسال الرد 🚀</button>
+        <!-- زر الانتقال لصفحة المراسلات المخصصة للأدمن -->
+        <button class="btn-main-menu btn-theme-ai" style="margin-bottom:18px;" onclick="openAdminMessagesPage()">
+            <div class="btn-main-menu-text">
+                <div class="btn-main-menu-icon">💬</div>
+                <div>
+                    <span style="display:block; font-size:1.15rem;">بريد واستفسارات المستخدمين</span>
+                    <span style="display:block; font-size:0.8rem; opacity:0.8; font-weight:700;">فتح صفحة المحادثات والردود</span>
                 </div>
             </div>
-        </div>
+            <span class="btn-main-menu-arrow">◀</span>
+        </button>
 
         <div class="admin-card">
             <h3>📢 تحديث لوح الإعلانات / المقال اليومي</h3>
@@ -1129,6 +1121,36 @@
         <div class="admin-card">
             <h3>📋 قائمة الأطباء المنشورين</h3>
             <div id="adminDoctorsList"></div>
+        </div>
+    </main>
+
+    <!-- صفحة مستقلة تماماً لمراسلات واستفسارات الأدمن -->
+    <main class="container" id="adminMessagesPage">
+        <div class="subpage-header">
+            <button class="btn-back" onclick="backToAdminDashboard()">➔ رجوع للوحة الإدارة</button>
+            <h2 style="font-size:1.15rem; color:var(--primary-dark); font-weight:900;">💬 بريد المستخدمين</h2>
+        </div>
+
+        <!-- قائمة المستخدمين أصحاب الرسائل -->
+        <div id="adminChatListView">
+            <p style="font-size:0.9rem; color:var(--text-sub); margin-bottom:12px; font-weight:800;">اضغط على أي مستخدم لقراءة استفساره والرد عليه:</p>
+            <div id="adminUserChatsList">جاري تحميل الرسائل...</div>
+        </div>
+
+        <!-- شباك المحادثة الكامل المخصص للرد على المستخدم المختار -->
+        <div id="adminChatWindow" style="display:none;">
+            <div style="background:#e0f2fe; border:1.5px solid #7dd3fc; border-radius:14px; padding:10px 14px; margin-bottom:12px; display:flex; justify-content:space-between; align-items:center;">
+                <h4 id="adminChatUserTitle" style="color:#0369a1; font-weight:900; font-size:1rem;">محادثة مع: </h4>
+                <button onclick="closeAdminChatWindow()" style="background:white; color:#0369a1; border:1px solid #7dd3fc; border-radius:10px; padding:6px 12px; font-weight:800; cursor:pointer;">القائمة ☰</button>
+            </div>
+            
+            <div class="chat-container-box">
+                <div class="chat-messages-area" id="adminChatMessagesArea"></div>
+                <div class="chat-input-area">
+                    <input type="text" id="adminReplyInput" class="chat-input-field" placeholder="اكتب ردك هنا للمستخدم..." onkeydown="if(event.key==='Enter') sendAdminReply()">
+                    <button onclick="sendAdminReply()" class="chat-btn-send">إرسال 🚀</button>
+                </div>
+            </div>
         </div>
     </main>
 
@@ -1195,8 +1217,9 @@
         let swRegistration = null;
         let enteredDigits = "";
 
-        // متغيرات محادثة الإدارة
+        // إدارة اشتراكات المحادثة المباشرة
         let userChatUnsubscribe = null;
+        let adminListUnsubscribe = null;
         let adminChatUnsubscribe = null;
         let currentAdminSelectedPhone = '';
 
@@ -1208,8 +1231,14 @@
         window.addEventListener('popstate', (e) => {
             if (e.state && e.state.screen === 'subpage') {
                 // البقاء في الصفحة الفرعية
+            } else if (e.state && e.state.screen === 'admin_messages') {
+                // في صفحة رسائل الأدمن
             } else {
-                backToMainMenu(false);
+                if (userRole === 'admin') {
+                    backToAdminDashboard();
+                } else {
+                    backToMainMenu(false);
+                }
             }
         });
 
@@ -1443,6 +1472,7 @@
             document.getElementById('userMainMenu').style.display = 'block';
             document.getElementById('subpageContainer').style.display = 'none';
             document.getElementById('adminView').style.display = 'none';
+            document.getElementById('adminMessagesPage').style.display = 'none';
             document.getElementById('photoBottomBar').style.display = 'none';
             listenToDailyArticle();
             syncCloudToLocal();
@@ -1516,16 +1546,16 @@
             }
         }
 
-        // --- نظام محادثة المستخدم المباشرة مع الإدارة ---
+        // --- نظام محادثة المستخدم المباشرة (مصحح ومضمون الظهور في الشاشة) ---
         function startUserChatListener() {
             if (!currentPhone) return;
             const messagesArea = document.getElementById('chatMessagesArea');
 
             if (userChatUnsubscribe) userChatUnsubscribe();
 
+            // الاستماع لكل الرسائل الخاصة برقم المستخدم وترتيبها محلياً لضمان عدم توقف الاستماع
             userChatUnsubscribe = cloudDb.collection('support_messages')
                 .where('userPhone', '==', currentPhone)
-                .orderBy('timestamp', 'asc')
                 .onSnapshot(snapshot => {
                     messagesArea.innerHTML = `
                         <div class="chat-bubble bot">
@@ -1533,8 +1563,11 @@
                             اكتب هنا أي استفسار أو سؤال وسيقوم المشرف / الصيدلي بالرد عليك مباشرة هنا.
                         </div>
                     `;
-                    snapshot.forEach(doc => {
-                        const m = doc.data();
+                    const msgs = [];
+                    snapshot.forEach(doc => msgs.push(doc.data()));
+                    msgs.sort((a, b) => (a.timestamp || 0) - (b.timestamp || 0));
+
+                    msgs.forEach(m => {
                         const bubble = document.createElement('div');
                         bubble.className = `chat-bubble ${m.sender === 'user' ? 'user' : 'bot'}`;
                         bubble.innerHTML = `
@@ -1544,7 +1577,9 @@
                         messagesArea.appendChild(bubble);
                     });
                     messagesArea.scrollTop = messagesArea.scrollHeight;
-                }, () => {});
+                }, (error) => {
+                    console.log(error);
+                });
         }
 
         async function sendUserChatMessage() {
@@ -1553,6 +1588,15 @@
             if (!msg || !currentPhone) return;
 
             input.value = '';
+
+            // إظهار الرسالة مباشرة وبشكل فوري داخل الشباك
+            const messagesArea = document.getElementById('chatMessagesArea');
+            const tempBubble = document.createElement('div');
+            tempBubble.className = 'chat-bubble user';
+            tempBubble.textContent = msg;
+            messagesArea.appendChild(tempBubble);
+            messagesArea.scrollTop = messagesArea.scrollHeight;
+
             try {
                 await cloudDb.collection('support_messages').add({
                     userPhone: currentPhone,
@@ -1565,20 +1609,44 @@
             }
         }
 
-        // --- نظام لوحة الإدارة لقراءة رسائل المستخدمين والرد عليها ---
+        // --- فتح وإدارة صفحة مراسلات الأدمن المستقلة ---
+        function openAdminMessagesPage() {
+            history.pushState({ screen: 'admin_messages' }, '');
+            document.getElementById('adminView').style.display = 'none';
+            document.getElementById('adminMessagesPage').style.display = 'block';
+            document.getElementById('adminChatListView').style.display = 'block';
+            document.getElementById('adminChatWindow').style.display = 'none';
+            loadAdminUserChatsList();
+        }
+
+        function backToAdminDashboard() {
+            closeAdminChatWindow();
+            if (adminListUnsubscribe) {
+                adminListUnsubscribe();
+                adminListUnsubscribe = null;
+            }
+            document.getElementById('adminMessagesPage').style.display = 'none';
+            document.getElementById('adminView').style.display = 'block';
+        }
+
         function loadAdminUserChatsList() {
             const listDiv = document.getElementById('adminUserChatsList');
-            cloudDb.collection('support_messages')
-                .orderBy('timestamp', 'desc')
+
+            if (adminListUnsubscribe) adminListUnsubscribe();
+
+            adminListUnsubscribe = cloudDb.collection('support_messages')
                 .onSnapshot(snapshot => {
                     if (snapshot.empty) {
-                        listDiv.innerHTML = '<p style="color:#64748b; font-size:0.9rem;">لا توجد رسائل واردة من المستخدمين حتى الآن.</p>';
+                        listDiv.innerHTML = '<p style="color:#64748b; font-size:0.9rem; text-align:center; padding:30px;">لا توجد أي رسائل واردة من المستخدمين حتى الآن.</p>';
                         return;
                     }
 
+                    const allMsgs = [];
+                    snapshot.forEach(doc => allMsgs.push(doc.data()));
+                    allMsgs.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
+
                     const userMap = new Map();
-                    snapshot.forEach(doc => {
-                        const d = doc.data();
+                    allMsgs.forEach(d => {
                         if (!userMap.has(d.userPhone)) {
                             userMap.set(d.userPhone, d);
                         }
@@ -1588,13 +1656,12 @@
                     userMap.forEach((lastMsg, phone) => {
                         const item = document.createElement('div');
                         item.className = 'directory-card';
-                        item.style.cursor = 'pointer';
                         item.innerHTML = `
                             <div class="directory-info" style="flex:1;">
                                 <h4>📱 مستخدم: ${phone}</h4>
-                                <p style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:210px;">${lastMsg.sender === 'admin' ? '↩️ أنت: ' : '📩 '} ${lastMsg.text}</p>
+                                <p style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:210px; font-weight:700;">${lastMsg.sender === 'admin' ? '↩️ ردك: ' : '📩 '} ${lastMsg.text}</p>
                             </div>
-                            <button onclick="openAdminChatWithUser('${phone}')" style="background:#059669; color:white; border:none; padding:8px 14px; border-radius:12px; font-weight:800; font-size:0.85rem; cursor:pointer;">محادثة 💬</button>
+                            <button onclick="openAdminChatWithUser('${phone}')" style="background:#059669; color:white; border:none; padding:10px 16px; border-radius:12px; font-weight:800; font-size:0.9rem; cursor:pointer;">فتح المحادثة 💬</button>
                         `;
                         listDiv.appendChild(item);
                     });
@@ -1606,6 +1673,7 @@
         function openAdminChatWithUser(phone) {
             currentAdminSelectedPhone = phone;
             document.getElementById('adminChatUserTitle').textContent = `محادثة مع المستخدم (${phone})`;
+            document.getElementById('adminChatListView').style.display = 'none';
             document.getElementById('adminChatWindow').style.display = 'block';
 
             const area = document.getElementById('adminChatMessagesArea');
@@ -1614,15 +1682,15 @@
 
             adminChatUnsubscribe = cloudDb.collection('support_messages')
                 .where('userPhone', '==', phone)
-                .orderBy('timestamp', 'asc')
                 .onSnapshot(snapshot => {
                     area.innerHTML = '';
-                    snapshot.forEach(doc => {
-                        const m = doc.data();
+                    const msgs = [];
+                    snapshot.forEach(doc => msgs.push(doc.data()));
+                    msgs.sort((a, b) => (a.timestamp || 0) - (b.timestamp || 0));
+
+                    msgs.forEach(m => {
                         const bubble = document.createElement('div');
                         bubble.className = `chat-bubble ${m.sender === 'admin' ? 'user' : 'bot'}`;
-                        bubble.style.fontSize = '0.9rem';
-                        bubble.style.padding = '8px 12px';
                         bubble.innerHTML = `
                             <span style="font-size:0.75rem; font-weight:900; display:block; opacity:0.8; margin-bottom:2px;">
                                 ${m.sender === 'admin' ? '↩️ ردك أنت:' : '📩 رسالة المستخدم:'}
@@ -1645,6 +1713,7 @@
                 adminChatUnsubscribe = null;
             }
             document.getElementById('adminChatWindow').style.display = 'none';
+            document.getElementById('adminChatListView').style.display = 'block';
             currentAdminSelectedPhone = '';
         }
 
@@ -1654,6 +1723,15 @@
             if (!msg || !currentAdminSelectedPhone) return;
 
             input.value = '';
+
+            // إظهار رد الأدمن مباشرة في شاشته
+            const area = document.getElementById('adminChatMessagesArea');
+            const tempBubble = document.createElement('div');
+            tempBubble.className = 'chat-bubble user';
+            tempBubble.innerHTML = `<span style="font-size:0.75rem; font-weight:900; display:block; opacity:0.8; margin-bottom:2px;">↩️ ردك أنت:</span>${msg}`;
+            area.appendChild(tempBubble);
+            area.scrollTop = area.scrollHeight;
+
             try {
                 await cloudDb.collection('support_messages').add({
                     userPhone: currentAdminSelectedPhone,
@@ -2083,6 +2161,7 @@
             document.getElementById('userMainMenu').style.display = 'none';
             document.getElementById('subpageContainer').style.display = 'none';
             document.getElementById('photoBottomBar').style.display = 'none';
+            document.getElementById('adminMessagesPage').style.display = 'none';
             document.getElementById('adminView').style.display = 'block';
 
             cloudDb.collection('app_settings').doc('daily_article').get().then(doc => {
@@ -2091,7 +2170,6 @@
                 }
             });
 
-            loadAdminUserChatsList();
             loadPharmaciesForAdmin();
             loadDoctorsForAdmin();
         }
