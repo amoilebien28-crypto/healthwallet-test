@@ -909,7 +909,7 @@
             <h2 id="subpageTitle" style="font-size:1.2rem; color:var(--primary-dark); font-weight:900;"></h2>
         </div>
 
-        <!-- 1. القسم الخاص بالذكاء الاصطناعي لفحص الدواء -->
+        <!-- 1. قسم الذكاء الاصطناعي لفحص الأدوية -->
         <div id="aiScanContainer" style="display:none;">
             <div class="ai-card">
                 <p style="font-size:0.95rem; font-weight:800; color:#475569; margin-bottom:14px; text-align:center;">
@@ -937,7 +937,7 @@
             </div>
         </div>
 
-        <!-- 2. جدول ومواعيد الأدوية -->
+        <!-- 2. قسم جدول ومواعيد الأدوية -->
         <div id="scheduleContainer" style="display:none;">
             <div class="notification-permission-box" id="notifPermissionBanner">
                 <p style="font-size:0.95rem; font-weight:800; color:#92400e;">🔔 لتصلك التنبيهات في وقتها على شاشة الهاتف، يرجى تفعيل الإشعارات:</p>
@@ -1126,7 +1126,7 @@
         firebase.initializeApp(firebaseConfig);
         const cloudDb = firebase.firestore();
 
-        // Il-Kodiċi API ġdid ipprovdut
+        // Clé API Gemini Studio valide
         const GEMINI_API_KEY = "AQ.Ab8RN6JKQHBPjO2LxSa-J8Yk0GaJoeiSYgV7zyQqVZAhlQuMxg";
 
         let localDb;
@@ -1137,13 +1137,14 @@
         let lastAnalyzedText = "";
         let enteredDigits = "";
 
+        // Gestion du bouton physique Retour Android
         window.addEventListener('load', () => {
             history.replaceState({ screen: 'home' }, '');
         });
 
         window.addEventListener('popstate', (e) => {
             if (e.state && e.state.screen === 'subpage') {
-                // jibqa' fis-subpage
+                // Reste dans la page
             } else {
                 backToMainMenu(false);
             }
@@ -1444,6 +1445,7 @@
             }
         }
 
+        // Pavé numérique pour le choix de l'heure
         function openTimePickerModal() {
             enteredDigits = "";
             document.getElementById('keypadDisplay').textContent = "-- : --";
@@ -1630,6 +1632,7 @@
             };
         }
 
+        // Traitement photo & appel IA Gemini
         function processAiDrugImage(e) {
             const file = e.target.files[0];
             if (!file) return;
@@ -1675,7 +1678,8 @@
                            "2. دواعي الاستعمال الرئيسية (لماذا يُستعمل؟).\n" +
                            "3. طريقة الاستعمال وتنبيه مختصر.";
 
-            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${encodeURIComponent(GEMINI_API_KEY)}`;
+            // URL mise à jour avec gemini-3.8-flash comme demandé par Google
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.8-flash:generateContent?key=${encodeURIComponent(GEMINI_API_KEY)}`;
 
             try {
                 const res = await fetch(url, {
@@ -1738,6 +1742,7 @@
             }
         }
 
+        // Contact d'urgence SOS
         function updateSosDisplay() {
             const name = localStorage.getItem('hw_sos_name') || 'ابني';
             const label = document.getElementById('sosMainLabel');
