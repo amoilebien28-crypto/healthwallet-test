@@ -637,7 +637,7 @@
             cursor: pointer;
         }
 
-        /* تنسيق مربع تصوير الدواء بعد تصغيره إلى شريط صغير */
+        /* تنسيق مربع تصوير الدواء بعد تصغيره إلى شريط مدمج */
         .ai-card {
             background: white;
             border-radius: 18px;
@@ -1137,7 +1137,6 @@
         let userRole = localStorage.getItem('user_role') || 'user';
         let currentSubCategory = '';
         let swRegistration = null;
-        let lastAnalyzedText = "";
         let enteredDigits = "";
 
         // إدارة زر الرجوع في أندرويد
@@ -1635,7 +1634,7 @@
             };
         }
 
-        // فحص الدواء بالكاميرا وتصغير أبعاد الصورة لسرعة الاستجابة
+        // فحص الدواء بالكاميرا وتصغير أبعاد الصورة لأقصى سرعة ممكنة
         function processAiDrugImage(e) {
             const file = e.target.files[0];
             if (!file) return;
@@ -1645,7 +1644,7 @@
                 const img = new Image();
                 img.onload = () => {
                     const canvas = document.createElement('canvas');
-                    const MAX_WIDTH = 600;
+                    const MAX_WIDTH = 480;
                     let width = img.width;
                     let height = img.height;
 
@@ -1659,7 +1658,7 @@
                     const ctx = canvas.getContext('2d');
                     ctx.drawImage(img, 0, 0, width, height);
                     
-                    const compressedBase64 = canvas.toDataURL('image/jpeg', 0.65);
+                    const compressedBase64 = canvas.toDataURL('image/jpeg', 0.55);
                     const base64Data = compressedBase64.split(',')[1];
                     
                     const preview = document.getElementById('aiPhotoPreview');
@@ -1682,11 +1681,11 @@
             loader.style.display = 'block';
             panel.style.display = 'none';
 
-            const prompt = "أنت صيدلي خبير ومساعد طبي لكبار السن. انظر إلى صورة الدواء وتعرف عليه بدقة.\n" +
-                           "مهم جداً: اكتب الإجابة حصرياً باللغة العربية البسيطة والواضحة (ترجم كل المعلومات إلى العربية ولا تكتب بالفرنسية مطلقاً):\n" +
-                           "1. اسم الدواء وقوته وشكله الصيدلاني (أقراص، كبسولات، مرهم، شراب...).\n" +
-                           "2. دواعي الاستعمال الرئيسية (لماذا يُستعمل هذا الدواء تحديداً وبشرح مبسط للغاية).\n" +
-                           "3. طريقة الاستعمال الصحيحة مع أهم تنبيه أو نصيحة لتناوله بأمان.";
+            // أمر مباشر ومحدد يمنع الإطالة تماماً
+            const prompt = "تعرف على الدواء واكتب بالعربية ملخصاً من 3 أسطر فقط:\n" +
+                           "• الاسم والقوة:\n" +
+                           "• الاستعمال:\n" +
+                           "• الجرعة وتنبيه:";
 
             const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.8-flash:generateContent?key=${encodeURIComponent(GEMINI_API_KEY)}`;
 
@@ -1709,8 +1708,8 @@
                             ]
                         }],
                         generationConfig: {
-                            maxOutputTokens: 300,
-                            temperature: 0.2
+                            maxOutputTokens: 250,
+                            temperature: 0.0
                         }
                     })
                 });
@@ -1719,8 +1718,7 @@
                 loader.style.display = 'none';
 
                 if (data.candidates && data.candidates[0].content && data.candidates[0].content.parts[0].text) {
-                    const text = data.candidates[0].content.parts[0].text;
-                    resultText.textContent = text;
+                    resultText.textContent = data.candidates[0].content.parts[0].text;
                     panel.style.display = 'block';
                 } else if (data.error) {
                     resultText.textContent = "خطأ: " + (data.error.message || "يرجى التحقق من المفتاح");
