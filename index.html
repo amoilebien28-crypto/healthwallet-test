@@ -637,30 +637,35 @@
             cursor: pointer;
         }
 
+        /* Cadre IA avec zone photo diminuée de moitié */
         .ai-card {
             background: white;
             border-radius: 20px;
-            padding: 18px;
+            padding: 14px;
             border: 1.5px solid #fbcfe8;
             box-shadow: 0 4px 14px rgba(0,0,0,0.04);
             margin-bottom: 20px;
         }
         .ai-cam-zone {
-            border: 2.5px dashed #f472b6;
+            border: 2px dashed #f472b6;
             background: #fdf2f8;
-            border-radius: 18px;
-            padding: 22px;
+            border-radius: 14px;
+            padding: 10px 14px;
             text-align: center;
             cursor: pointer;
-            margin-bottom: 14px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
         }
         .ai-result-panel {
             display: none;
             background: #ffffff;
             border: 2px solid #059669;
             border-radius: 16px;
-            padding: 16px;
-            margin-top: 14px;
+            padding: 14px;
+            margin-top: 12px;
         }
 
         #adminView {
@@ -909,35 +914,32 @@
             <h2 id="subpageTitle" style="font-size:1.2rem; color:var(--primary-dark); font-weight:900;"></h2>
         </div>
 
-        <!-- 1. قسم الذكاء الاصطناعي لفحص الأدوية -->
+        <!-- 1. Section IA avec cadre diminué et sans bouton écouter -->
         <div id="aiScanContainer" style="display:none;">
             <div class="ai-card">
-                <p style="font-size:0.95rem; font-weight:800; color:#475569; margin-bottom:14px; text-align:center;">
-                    التقط صورة واضحة لاسم الدواء وسيشرح لك المساعد الذكي دواعي استعماله وطريقة تناوله فوراً.
+                <p style="font-size:0.88rem; font-weight:800; color:#475569; margin-bottom:10px; text-align:center;">
+                    التقط صورة واضحة لاسم الدواء للشرح والترجمة فوراً:
                 </p>
                 <div class="ai-cam-zone" onclick="document.getElementById('aiDrugPhotoInput').click()">
-                    <span style="font-size:3rem;">📸</span>
-                    <p style="font-weight:900; font-size:1.1rem; color:#be185d; margin-top:8px;">اضغط هنا لفتح الكاميرا وتصوير العلبة</p>
+                    <span style="font-size:1.6rem;">📸</span>
+                    <span style="font-weight:900; font-size:0.95rem; color:#be185d;">اضغط هنا لفتح الكاميرا وتصوير العلبة</span>
                     <input type="file" id="aiDrugPhotoInput" accept="image/*" capture="environment" style="display:none;" onchange="processAiDrugImage(event)">
                 </div>
 
-                <img id="aiPhotoPreview" style="display:none; width:100%; max-height:240px; border-radius:14px; object-fit:contain; margin-bottom:12px;" alt="صورة الدواء">
+                <img id="aiPhotoPreview" style="display:none; width:100%; max-height:200px; border-radius:12px; object-fit:contain; margin-bottom:10px;" alt="صورة الدواء">
 
-                <div id="aiLoader" style="display:none; text-align:center; padding:15px; font-weight:900; color:var(--primary);">
-                    ⏳ جارٍ فحص وتحليل الدواء بالذكاء الاصطناعي... انتظر قليلاً.
+                <div id="aiLoader" style="display:none; text-align:center; padding:12px; font-weight:900; color:var(--primary);">
+                    ⏳ جارٍ تحليل الدواء بالذكاء الاصطناعي... انتظر قليلاً.
                 </div>
 
                 <div id="aiResultPanel" class="ai-result-panel">
-                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-                        <h4 style="color:var(--primary-dark); font-weight:900; font-size:1.1rem;">📋 نتيجة الفحص والتحليل</h4>
-                        <button onclick="readAiTextVoice()" style="background:#e0f2fe; border:1px solid #7dd3fc; border-radius:10px; padding:6px 12px; font-weight:900; color:#0369a1; cursor:pointer;">🔊 استماع</button>
-                    </div>
-                    <div id="aiResultText" style="line-height:1.65; font-size:1.02rem; font-weight:800; color:#1e293b; white-space:pre-wrap;"></div>
+                    <h4 style="color:var(--primary-dark); font-weight:900; font-size:1.05rem; margin-bottom:8px;">📋 نتيجة الفحص والتحليل</h4>
+                    <div id="aiResultText" style="line-height:1.6; font-size:1rem; font-weight:800; color:#1e293b; white-space:pre-wrap;"></div>
                 </div>
             </div>
         </div>
 
-        <!-- 2. قسم جدول ومواعيد الأدوية -->
+        <!-- 2. Section Calendrier des Médicaments -->
         <div id="scheduleContainer" style="display:none;">
             <div class="notification-permission-box" id="notifPermissionBanner">
                 <p style="font-size:0.95rem; font-weight:800; color:#92400e;">🔔 لتصلك التنبيهات في وقتها على شاشة الهاتف، يرجى تفعيل الإشعارات:</p>
@@ -1126,7 +1128,7 @@
         firebase.initializeApp(firebaseConfig);
         const cloudDb = firebase.firestore();
 
-        // مفتاح Gemini الصالح
+        // Clé API Gemini Studio valide
         const GEMINI_API_KEY = "AQ.Ab8RN6JKQHBPjO2LxSa-J8Yk0GaJoeiSYgV7zyQqVZAhlQuMxg";
 
         let localDb;
@@ -1137,14 +1139,14 @@
         let lastAnalyzedText = "";
         let enteredDigits = "";
 
-        // إدارة زر الرجوع في أندرويد
+        // Gestion du bouton physique Retour Android
         window.addEventListener('load', () => {
             history.replaceState({ screen: 'home' }, '');
         });
 
         window.addEventListener('popstate', (e) => {
             if (e.state && e.state.screen === 'subpage') {
-                // البقاء في الصفحة الفرعية
+                // Reste dans la page
             } else {
                 backToMainMenu(false);
             }
@@ -1445,7 +1447,7 @@
             }
         }
 
-        // لوحة الأرقام السفلية لتحديد الوقت
+        // Pavé numérique pour le choix de l'heure
         function openTimePickerModal() {
             enteredDigits = "";
             document.getElementById('keypadDisplay').textContent = "-- : --";
@@ -1632,7 +1634,7 @@
             };
         }
 
-        // فحص الدواء بالكاميرا والذكاء الاصطناعي
+        // Traitement photo ultra-rapide
         function processAiDrugImage(e) {
             const file = e.target.files[0];
             if (!file) return;
@@ -1642,15 +1644,21 @@
                 const img = new Image();
                 img.onload = () => {
                     const canvas = document.createElement('canvas');
-                    const MAX_WIDTH = 800;
-                    const scaleSize = MAX_WIDTH / img.width;
-                    canvas.width = (img.width > MAX_WIDTH) ? MAX_WIDTH : img.width;
-                    canvas.height = (img.width > MAX_WIDTH) ? (img.height * scaleSize) : img.height;
-                    
+                    const MAX_WIDTH = 600;
+                    let width = img.width;
+                    let height = img.height;
+
+                    if (width > MAX_WIDTH) {
+                        height = Math.round((height * MAX_WIDTH) / width);
+                        width = MAX_WIDTH;
+                    }
+
+                    canvas.width = width;
+                    canvas.height = height;
                     const ctx = canvas.getContext('2d');
-                    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                    ctx.drawImage(img, 0, 0, width, height);
                     
-                    const compressedBase64 = canvas.toDataURL('image/jpeg', 0.85);
+                    const compressedBase64 = canvas.toDataURL('image/jpeg', 0.65);
                     const base64Data = compressedBase64.split(',')[1];
                     
                     const preview = document.getElementById('aiPhotoPreview');
@@ -1673,14 +1681,12 @@
             loader.style.display = 'block';
             panel.style.display = 'none';
 
-            // توجيه صارم للترجمة والشرح باللغة العربية حصراً
             const prompt = "أنت صيدلي خبير ومساعد طبي لكبار السن. انظر إلى صورة الدواء وتعرف عليه بدقة.\n" +
                            "مهم جداً: اكتب الإجابة حصرياً باللغة العربية البسيطة والواضحة (ترجم كل المعلومات إلى العربية ولا تكتب بالفرنسية مطلقاً):\n" +
                            "1. اسم الدواء وقوته وشكله الصيدلاني (أقراص، كبسولات، مرهم، شراب...).\n" +
                            "2. دواعي الاستعمال الرئيسية (لماذا يُستعمل هذا الدواء تحديداً وبشرح مبسط للغاية).\n" +
                            "3. طريقة الاستعمال الصحيحة مع أهم تنبيه أو نصيحة لتناوله بأمان.";
 
-            // استخدام النموذج الحديث المطلوب لتفادي الخطأ
             const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.8-flash:generateContent?key=${encodeURIComponent(GEMINI_API_KEY)}`;
 
             try {
@@ -1700,7 +1706,11 @@
                                     }
                                 }
                             ]
-                        }]
+                        }],
+                        generationConfig: {
+                            maxOutputTokens: 300,
+                            temperature: 0.2
+                        }
                     })
                 });
 
@@ -1709,42 +1719,23 @@
 
                 if (data.candidates && data.candidates[0].content && data.candidates[0].content.parts[0].text) {
                     const text = data.candidates[0].content.parts[0].text;
-                    lastAnalyzedText = text;
                     resultText.textContent = text;
                     panel.style.display = 'block';
                 } else if (data.error) {
-                    lastAnalyzedText = "خطأ: " + (data.error.message || "يرجى التحقق من المفتاح");
-                    resultText.textContent = lastAnalyzedText;
+                    resultText.textContent = "خطأ: " + (data.error.message || "يرجى التحقق من المفتاح");
                     panel.style.display = 'block';
                 } else {
-                    lastAnalyzedText = "تعذر تحديد بيانات الدواء بوضوح، يرجى التقاط صورة مقربة للاسم.";
-                    resultText.textContent = lastAnalyzedText;
+                    resultText.textContent = "تعذر تحديد بيانات الدواء بوضوح، يرجى التقاط صورة مقربة للاسم.";
                     panel.style.display = 'block';
                 }
             } catch(e) {
                 loader.style.display = 'none';
-                lastAnalyzedText = "تعذر الاتصال بالخدمة. تأكد من اتصال الهاتف بالإنترنت.";
-                resultText.textContent = lastAnalyzedText;
+                resultText.textContent = "تعذر الاتصال بالخدمة. تأكد من اتصال الهاتف بالإنترنت.";
                 panel.style.display = 'block';
             }
         }
 
-        function readAiTextVoice() {
-            const textToSpeak = lastAnalyzedText || document.getElementById('aiResultText').textContent;
-            if (!textToSpeak) return;
-
-            if ('speechSynthesis' in window) {
-                window.speechSynthesis.cancel();
-                const u = new SpeechSynthesisUtterance(textToSpeak);
-                u.lang = 'ar';
-                u.rate = 0.85;
-                window.speechSynthesis.speak(u);
-            } else {
-                showAppAlert('تنبيه', 'خاصية الصوت غير مدعومة في متصفحك.');
-            }
-        }
-
-        // إعدادات الطوارئ
+        // Contact d'urgence SOS
         function updateSosDisplay() {
             const name = localStorage.getItem('hw_sos_name') || 'ابني';
             const label = document.getElementById('sosMainLabel');
